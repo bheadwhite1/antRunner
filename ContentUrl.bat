@@ -9,24 +9,24 @@ FOR /F "tokens=*" %%F IN ('%getclip%') DO (
     SET booyeah="%%F"
 )
 
-
 FOR /F "TOKENS=2* delims=/" %%I IN (%booyeah%) DO SET "env=%%I"
 FOR /F "TOKENS=3* delims==" %%I IN (%booyeah%) DO SET "contentPath=%%I"
+FOR /F "TOKENS=6* delims=/" %%I IN ("%contentPath%") DO SET "last=%%I"
 FOR /F "TOKENS=7* delims=/" %%I IN ("%contentPath%") DO SET "last=%%I"
 FOR /F "TOKENS=8* delims=/" %%I IN ("%contentPath%") DO SET "last=%%I"
 FOR /F "TOKENS=9* delims=/" %%I IN ("%contentPath%") DO SET "last=%%I"
 
-::1stFile
-FOR /F "TOKENS=1-7 delims=/" %%A IN ("%contentPath%") DO SET "firstPath=%%A/%%B/%%C/%%D/%%E/%%F"
-::2ndFile
-FOR /F "TOKENS=1-7 delims=/" %%A IN ("%contentPath%") DO SET "secondPath=%%A/%%B/%%C/%%D/%%E/%%G"
-::3rdFile
-FOR /F "TOKENS=1-8 delims=/" %%A IN ("%contentPath%") DO SET "thirdPath=%%A/%%B/%%C/%%D/%%E/%%H"
-::4thFile
-FOR /F "TOKENS=1-9 delims=/" %%A IN ("%contentPath%") DO SET "fourthPath=%%A/%%B/%%C/%%D/%%E/%%I"
-::lastFile
+REM ::1stFile
+REM FOR /F "TOKENS=1-6 delims=/" %%A IN ("%contentPath%") DO SET "firstPath=%%A/%%B/%%C/%%D/%%E/%%F"
+REM ::2ndFile
+REM FOR /F "TOKENS=1-7 delims=/" %%A IN ("%contentPath%") DO SET "firstPath=%%A/%%B/%%C/%%D/%%E/%%F"
+REM ::3rdFile
+REM FOR /F "TOKENS=1-7 delims=/" %%A IN ("%contentPath%") DO SET "secondPath=%%A/%%B/%%C/%%D/%%E/%%G"
+REM ::4thFile
+REM FOR /F "TOKENS=1-8 delims=/" %%A IN ("%contentPath%") DO SET "thirdPath=%%A/%%B/%%C/%%D/%%E/%%H"
+REM ::lastFile
+REM FOR /F "TOKENS=1-9 delims=/" %%A IN ("%contentPath%") DO SET "fourthPath=%%A/%%B/%%C/%%D/%%E/%%I"
 FOR /F "TOKENS=1-7 delims=/" %%A IN ("%contentPath%") DO SET "lastFile=%%A/%%B/%%C/%%D/%%E/!last!"
-
 
 IF '%env%'=='localhost:8080' (
     START "C:\Program Files\firstobject\foxe.exe" "C:\techuser\data\!lastFile!.xml"
