@@ -65,6 +65,16 @@ IF ERRORLEVEL 3 (
 )
 IF NOT '%step%'=='PUB' GOTO assigndata
 
+SET search=!fleet!
+IF '%fleet%'=='175' (
+    IF '%doctype%'=='MIP' (
+        SET search=mip
+    )
+    IF '%doctype%'=='AMM' (
+        SET search=MPP
+    )
+)
+
 MODE con:cols=100 lines=20
 SET /a counter=0
 SET /a number=0
@@ -72,7 +82,7 @@ SET choice=
 SET bool=f
 FOR /f "usebackq delims=|" %%f in (`dir /b /O:-D "\\sgudocstage\Documents\JaredLisa\skytrackprocess\src\fromEditor"`) do (
     IF !counter! LSS 50 (
-        ECHO %%f|find "!fleet!" >NUL
+        ECHO %%f|find "!search!" >NUL
         SET /a counter+=1
         IF NOT ERRORLEVEL 1 (
             SET /a number+=1
@@ -110,15 +120,15 @@ IF '%step%'=='GFXtoMX' GOTO MGFX
 IF "%doctype%"=="MIP" (
     IF "%fleet%"=="900" SET Hours=1 && SET Minutes=28 && GOTO robocopy
     IF "%fleet%"=="700" SET Hours=1 && SET Minutes=28 &&GOTO robocopy
-    IF "%fleet%"=="200" SET Hours=1 && SET && GOTO robocopy
-    IF "%fleet%"=="175" SET Hours=1 && SET && GOTO robocopy
+    IF "%fleet%"=="200" SET Hours=1 && GOTO robocopy
+    IF "%fleet%"=="175" SET Hours=1 && GOTO robocopy
     REM IF "%fleet%"=="175" SET Seconds=1 && GOTO robocopy
 )
 IF "%doctype%"=="AMM" (
     IF "%fleet%"=="900" ECHO nodata && GOTO end
     IF "%fleet%"=="700" ECHO nodata && GOTO end
     IF "%fleet%"=="200" ECHO nodata && GOTO end
-    IF "%fleet%"=="175" ECHO nodata && GOTO end
+    IF "%fleet%"=="175" SET Hours=1 && GOTO robocopy
 )
 
 :toQA
@@ -179,7 +189,16 @@ ECHO 2. Skip
 CHOICE /c 12 /t 10 /d 1 /cs /m "copy %thisManual%?"
 IF ERRORLEVEL 1 CLS
 IF ERRORLEVEL 2 GOTO eclipse
-IF "%fleet%"=="175" CALL fromEditCopy.bat "!thisManual!" "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\swMIP_ERJ175\transform\docs"
+IF "%fleet%"=="175" (
+    IF !doctype!==MIP (
+        CALL fromEditCopy.bat "!thisManual!" "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\swMIP_ERJ175\transform\docs"
+    )
+    IF !doctype!==AMM (
+        echo !thisManual!
+        pause
+        CALL fromEditCopy.bat "!thisManual!" "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\swAMM_ERJ175\processes\docs"
+    )
+)
 IF "%fleet%"=="200" CALL fromEditCopy.bat "!thisManual!" "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\swMIP_CRJ\transform\docs"
 IF "%fleet%"=="700" CALL fromEditCopy.bat "!thisManual!" "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\swMIP_CRJ\transform\docs"
 IF "%fleet%"=="900" CALL fromEditCopy.bat "!thisManual!" "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\swMIP_CRJ\transform\docs"
@@ -191,7 +210,14 @@ ECHO 2. Skip
 CHOICE /c 12 /t 10 /d 1 /n /cs /m "run eclipse?"
 IF ERRORLEVEL 1 CLS
 IF ERRORLEVEL 2 MODE con:cols=34 lines=3 && GOTO CountDown
-IF "%fleet%"=="175" CALL eclipse.bat "!thisManual!" "175MIP" "swMIP_ERJ175"
+IF "%fleet%"=="175" (
+    IF !doctype!==MIP (
+        CALL eclipse.bat "!thisManual!" "175MIP" "swMIP_ERJ175" 
+    ) 
+    IF !doctype!==AMM ( 
+        CALL eclipse.bat "swAMM_ERJ175.xml" "175AMM" "swAMM_ERJ175"
+    )
+)
 IF "%fleet%"=="200" CALL eclipse.bat "!thisManual!" "200MIP" "swMIP_CRJ"
 IF "%fleet%"=="700" CALL eclipse.bat "!thisManual!" "700MIP" "swMIP_CRJ"
 IF "%fleet%"=="900" CALL eclipse.bat "!thisManual!" "900MIP" "swMIP_CRJ"
