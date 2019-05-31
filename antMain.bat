@@ -5,7 +5,7 @@ PUSHD %~dp0
 
 CLS
 ECHO a. AntRunner/xPath     b. Build for Dev
-ECHO s. Copy 44 to techuser w. Watch css
+ECHO s. Copy script         w. Watch css
 ECHO d. Tech Publisher
 ECHO f. Open ContentURL
 

@@ -50,6 +50,8 @@ IF '%env%'=='techview.skywestonline.com' (
 
 ::GRABS THE CONTENT FULL PATH
 ECHO env: %env%
+REM echo !lastFile!
+REM pause
 REM ECHO fullpath: %contentPath%
 REM ECHO last: %last%
 REM ECHO 1stPath: %firstPath%
