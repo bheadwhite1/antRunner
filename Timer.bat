@@ -55,8 +55,9 @@ CHOICE /C 123 /M "Pick a doctype:"
 IF ERRORLEVEL 1 SET doctype=AMM
 IF ERRORLEVEL 2 SET doctype=MIP
 IF ERRORLEVEL 3 (
-    SET /p doctype="What is the doctype name?"
-    SET Minutes=15
+    SET /p doctype="What is the doctype name? "
+    SET /p Hours="how long do you wanna wait in hours? "
+    SET /p Minutes="minutes? "
     MODE con:cols=34 lines=3 
     SET titlebarMSG="%fleet% %doctype% Timer"
     SET timerMSG="%fleet% %doctype% Publishing should be complete, ready to begin toQA Timer"
@@ -177,7 +178,7 @@ SET Minutes=5 && GOTO CountDown
 :retry
 SET "timerDisplay=%fleet%%doctype% %step% ++"
 SET "retry=y"
-SET Minutes=5 && GOTO CountDown
+SET Minutes=30 && GOTO CountDown
 REM SET Seconds=1 && GOTO CountDown
 :robocopy
 MODE con:cols=70 lines=10

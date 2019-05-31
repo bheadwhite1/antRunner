@@ -186,7 +186,7 @@ IF "%ERRORLEVEL%" == "12" GOTO begin
 IF "%ERRORLEVEL%" == "11" GOTO manual
 IF "%ERRORLEVEL%" == "10" GOTO antrunner
 IF "%ERRORLEVEL%" == "9" GOTO viewfile
-IF "%ERRORLEVEL%" == "8" SET "thisManual=xPath.xml" && SET target=[RUN]basic && GOTO runANT
+IF "%ERRORLEVEL%" == "8" SET "thisManual=%manual%-xPath.xml" && SET target=[RUN]basic && GOTO runANT
 IF "%ERRORLEVEL%" == "7" SET choicer=tmp\!thisManual:~0,-4!-short.xml && GOTO runxpath
 IF "%ERRORLEVEL%" == "6" SET choicer=tmp\!thisManual:~0,-4!.html && GOTO runxpath
 IF "%ERRORLEVEL%" == "5" SET choicer=docs\!thisManual! && GOTO runxpath
@@ -214,16 +214,16 @@ IF '!expression!'=='v' GOTO viewfile
 IF '!expression!'=='u' GOTO antrunner
 IF '!expression!'=='m' GOTO manual
 IF '!expression!'=='n' GOTO begin
-IF '!expression!'=='p' SET "thisManual=xPath.xml" && SET target=[RUN]basic && GOTO runANT
+IF '!expression!'=='p' SET "thisManual=%manual%-xPath.xml" && SET target=[RUN]basic && GOTO runANT
 SET "root=C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%"
 SET "dtd=%root%\%doctype%.dtd"
 SET thisFile="%root%\transform\!choicer!"
 IF '!expression!'=='o' GOTO xpathWithRoot
 ::working
-tidy -q -xml !thisFile! | findstr /R "?xml DOCTYPE ENTITY dtd \]> ^\[$" > %root%\transform\docs\xPath.xml
+tidy -q -xml !thisFile! | findstr /R "?xml DOCTYPE ENTITY dtd \]> ^\[$" > %root%\transform\docs\%manual%-xPath.xml
 REM tidy -q -xml --doctype omit --numeric-entities yes !thisFile! | xml sel -t -c "%expression%"  >>  %root%\transform\docs\xPath.xml
-xml -q fo -D !thisFile! | tidy -q -xml | xml sel -t -c "%expression%"  >>  %root%\transform\docs\xPath.xml
-START %root%\transform\docs\xPath.xml
+xml -q fo -D !thisFile! | tidy -q -xml | xml sel -t -c "%expression%"  >>  %root%\transform\docs\%manual%-xPath.xml
+START %root%\transform\docs\%manual%-xPath.xml
 GOTO xpath
 
 :xpathWithRoot
@@ -234,9 +234,9 @@ IF '!expression!'=='v' GOTO viewfile
 IF '!expression!'=='u' GOTO antrunner
 IF '!expression!'=='m' GOTO manual
 IF '!expression!'=='n' GOTO begin
-IF '!expression!'=='p' SET "thisManual=xPath.xml" && SET target=[RUN]basic && GOTO runANT
+IF '!expression!'=='p' SET "thisManual=%manual%-xPath.xml" && SET target=[RUN]basic && GOTO runANT
 
-xml -q fo --dropdtd !thisFile! | xml sel -t -e "%xpathroot%" -c "%expression%" > %root%\transform\docs\xPath.xml
+xml -q fo --dropdtd !thisFile! | xml sel -t -e "%xpathroot%" -c "%expression%" > %root%\transform\docs\%manual%-xPath.xml
 START %root%\transform\docs\xPath.xml
 GOTO xpath
 
