@@ -236,8 +236,9 @@ IF '!expression!'=='m' GOTO manual
 IF '!expression!'=='n' GOTO begin
 IF '!expression!'=='p' SET "thisManual=%manual%-xPath.xml" && SET target=[RUN]basic && GOTO runANT
 
-xml -q fo --dropdtd !thisFile! | xml sel -t -e "%xpathroot%" -c "%expression%" > %root%\transform\docs\%manual%-xPath.xml
-START %root%\transform\docs\xPath.xml
+tidy -q -xml !thisFile! | findstr /R "?xml DOCTYPE ENTITY dtd \]> ^\[$" > %root%\transform\docs\%manual%-xPath.xml
+xml -q fo --dropdtd !thisFile! | tidy -q -xml | xml sel -t -e "%xpathroot%" -c "%expression%" >> %root%\transform\docs\%manual%-xPath.xml
+START %root%\transform\docs\%manual%-xPath.xml
 GOTO xpath
 
 :runSHORT
