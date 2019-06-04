@@ -15,25 +15,28 @@ ECHO   ******************************************
 ECHO    a. AMM       r. AMM       1. MIP_CRJ        x. EXIT
 ECHO    s. AIPC                   2. skybook
 ECHO    d. MIP                    3. skybulletin
-ECHO    f. SRMI                   4. forms
-ECHO    q. SRM
-ECHO    w. SWPM
+ECHO    f. NDT                    4. forms
+ECHO    q. SRMI
+ECHO    w. SRM
+ECHO    e. SWPM
 ECHO.
-CHOICE /C asdfqw1234rx /CS /N /M "Pick a target: "
+CHOICE /C asdfqwe1234rx /CS /N /M "Pick a target: "
 IF "%ERRORLEVEL%"== "1" SET "manual=175_AMM"
 IF "%ERRORLEVEL%"== "2" SET "manual=175_AIPC"
 IF "%ERRORLEVEL%"== "3" SET "manual=175_MIP"
-IF "%ERRORLEVEL%"== "4" SET "manual=175_SRMI"
-IF "%ERRORLEVEL%"== "5" SET "manual=175_SRM"
-IF "%ERRORLEVEL%"== "6" SET "manual=175_SWPM"
-IF "%ERRORLEVEL%"== "7" SET "manual=MIP_CRJ"
-IF "%ERRORLEVEL%"== "8" SET "manual=skybook"
-IF "%ERRORLEVEL%"== "9" SET "manual=skybulletin"
-IF "%ERRORLEVEL%"== "10" SET "manual=forms"
-IF "%ERRORLEVEL%"== "11" SET "manual=200_AMM"
-IF "%ERRORLEVEL%"== "12" EXIT
+IF "%ERRORLEVEL%"== "4" SET "manual=175_NDT"
+IF "%ERRORLEVEL%"== "5" SET "manual=175_SRMI"
+IF "%ERRORLEVEL%"== "6" SET "manual=175_SRM"
+IF "%ERRORLEVEL%"== "7" SET "manual=175_SWPM"
+IF "%ERRORLEVEL%"== "8" SET "manual=MIP_CRJ"
+IF "%ERRORLEVEL%"== "9" SET "manual=skybook"
+IF "%ERRORLEVEL%"== "10" SET "manual=skybulletin"
+IF "%ERRORLEVEL%"== "11" SET "manual=forms"
+IF "%ERRORLEVEL%"== "12" SET "manual=200_AMM"
+IF "%ERRORLEVEL%"== "13" EXIT
 IF '%manual%'=='175_AIPC' SET "doctype=swAIPC_ERJ175" && SET "file=swaipc_erj175"
 IF '%manual%'=='175_AMM' SET "doctype=swAMM_ERJ175"
+IF '%manual%'=='175_NDT' SET "doctype=swNDT_ERJ175"
 IF '%manual%'=='175_MIP' SET "doctype=swMIP_ERJ175" && SET "file=swmip_erj175"
 IF '%manual%'=='175_SRMI' SET "doctype=swSRMI_ERJ175" && SET "file=swsrmi_erj175"
 IF '%manual%'=='175_SWPM' SET "doctype=swSWPM_ERJ175" && SET "file=swswpm_erj175"
