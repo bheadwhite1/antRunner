@@ -76,10 +76,8 @@ IF "%ERRORLEVEL%" == "1" SET "root=C:\"
 
 ::css/js copy
 ROBOCOPY "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%" "%root%techuser\doctypes\%doctype%" "%file%.css" "%file%.js" /LEV:1
-PAUSE
 ::processes copy
 ROBOCOPY "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\processes" "%root%techuser\doctypes\%doctype%\processes" "aa_prepareXML.xsl" "ab_doTechview.xsl" "ac_generateTOC.xsl" "ad_finalizeXML.xsl" /LEV:1
-PAUSE
 ::transform copy
 ROBOCOPY "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\common\xslt" "%root%techuser\doctypes\%doctype%\common\xslt"
 PAUSE
