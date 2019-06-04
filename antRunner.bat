@@ -78,6 +78,8 @@ IF '%num%'=='b' GOTO begin
 :onlyone
 SET thisManual=!choicer[%num%]!
 SET choicer=docs\!thisManual!
+
+GOTO viewfile
 :antrunner
 ::SELECT A TARGET TO RUN IN ANTRUNNER
 
