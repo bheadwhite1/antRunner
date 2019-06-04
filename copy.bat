@@ -30,27 +30,29 @@ CLS
 ECHO.
 ECHO      175          200          OTHER
 ECHO ******************************************
-ECHO   a. AMM       e. AMM       1. MIP_CRJ
+ECHO   a. AMM       r. AMM       1. MIP_CRJ
 ECHO   s. AIPC                   2. skybook
 ECHO   d. MIP                    3. skybulletin
-ECHO   f. SRMI                   4. forms
-ECHO   q. SRM
-ECHO   w. SWPM
+ECHO   f. NDT                    4. forms
+ECHO   q. SRMI
+ECHO   w. SRM
+ECHO   e. SWPM
 ECHO.
 ECHO.
 
-CHOICE /C asdfqwe1234 /CS /N /M "Which manual? "
+CHOICE /C asdfqwer1234 /CS /N /M "Which manual? "
 IF "%ERRORLEVEL%"== "1" SET "manual=175_AMM"
 IF "%ERRORLEVEL%"== "2" SET "manual=175_AIPC"
 IF "%ERRORLEVEL%"== "3" SET "manual=175_MIP"
-IF "%ERRORLEVEL%"== "4" SET "manual=175_SRMI"
-IF "%ERRORLEVEL%"== "5" SET "manual=175_SRM"
-IF "%ERRORLEVEL%"== "6" SET "manual=175_SWPM"
-IF "%ERRORLEVEL%"== "7" SET "manual=200_AMM"
-IF "%ERRORLEVEL%"== "8" SET "manual=MIP_CRJ"
-IF "%ERRORLEVEL%"== "9" SET "manual=skybook"
-IF "%ERRORLEVEL%"== "10" SET "manual=skybulletin"
-IF "%ERRORLEVEL%"== "11" SET "manual=forms"
+IF "%ERRORLEVEL%"== "4" SET "manual=175_NDT"
+IF "%ERRORLEVEL%"== "5" SET "manual=175_SRMI"
+IF "%ERRORLEVEL%"== "6" SET "manual=175_SRM"
+IF "%ERRORLEVEL%"== "7" SET "manual=175_SWPM"
+IF "%ERRORLEVEL%"== "8" SET "manual=200_AMM"
+IF "%ERRORLEVEL%"== "9" SET "manual=MIP_CRJ"
+IF "%ERRORLEVEL%"== "10" SET "manual=skybook"
+IF "%ERRORLEVEL%"== "11" SET "manual=skybulletin"
+IF "%ERRORLEVEL%"== "12" SET "manual=forms"
 
 GOTO assignData
 
@@ -87,6 +89,7 @@ GOTO end
 IF '%manual%'=='175_AIPC' SET "doctype=swAIPC_ERJ175" && SET "file=swaipc_erj175"
 REM IF '%manual%'=='175_AMM' SET "doctype=swAMM_ERJ175" && SET "file=NA"
 IF '%manual%'=='175_MIP' SET "doctype=swMIP_ERJ175" && SET "file=swmip_erj175"
+IF '%manual%'=='175_NDT' SET "doctype=swNDT_ERJ175" && SET "file=swndt_erj175"
 IF '%manual%'=='175_SRMI' SET "doctype=swSRMI_ERJ175" && SET "file=swsrmi_erj175"
 IF '%manual%'=='175_SRM' SET "doctype=swSRM_ERJ175" && SET "file=swsrm_erj175"
 IF '%manual%'=='175_SWPM' SET "doctype=swSWPM_ERJ175" && SET "file=swswpm_erj175"
