@@ -6,3 +6,4 @@ set titlebarMSG=eclipse
 start /b "" cscript alert.vbs %timerMSG% %titlebarMSG%
 pushd %~dp0
 pause
+MODE con:cols=34 lines=3
