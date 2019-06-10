@@ -148,15 +148,15 @@ ECHO.
 CHOICE /c 12 /t 10 /d 1 /cs /n /m "copy %thisManual%?"
 IF "!fleet!"=="175" (
     IF '!manual!'=='MIP' (
-        CALL fromEditCopy.bat "!thisManual!" "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\swMIP_ERJ175\transform\docs"
+        CALL fromEditCopy.bat "!thisManual!" "C:\techuser\doctypes\swMIP_ERJ175\transform\docs"
     )
     IF '!doctype!'==AMM (
-        CALL fromEditCopy.bat "!thisManual!" "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\swAMM_ERJ175\processes\docs"
+        CALL fromEditCopy.bat "!thisManual!" "C:\techuser\doctypes\swAMM_ERJ175\processes\docs"
     )
 )
-IF "%fleet%"=="200" CALL fromEditCopy.bat "!thisManual!" "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\swMIP_CRJ\transform\docs"
-IF "%fleet%"=="700" CALL fromEditCopy.bat "!thisManual!" "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\swMIP_CRJ\transform\docs"
-IF "%fleet%"=="900" CALL fromEditCopy.bat "!thisManual!" "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\swMIP_CRJ\transform\docs"
+IF "%fleet%"=="200" CALL fromEditCopy.bat "!thisManual!" "C:\techuser\doctypes\swMIP_CRJ\transform\docs"
+IF "%fleet%"=="700" CALL fromEditCopy.bat "!thisManual!" "C:\techuser\doctypes\swMIP_CRJ\transform\docs"
+IF "%fleet%"=="900" CALL fromEditCopy.bat "!thisManual!" "C:\techuser\doctypes\swMIP_CRJ\transform\docs"
 
 :end
 EXIT
