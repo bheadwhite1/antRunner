@@ -1,3 +1,3 @@
 @ECHO OFF
-cd "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes"
+cd "C:\techuser\doctypes"
 npm run prod

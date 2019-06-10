@@ -112,7 +112,7 @@ IF "%ERRORLEVEL%"== "12" GOTO viewfile
 IF "%ERRORLEVEL%"== "13" GOTO manual
 IF "%ERRORLEVEL%"== "14" GOTO begin
 IF "%ERRORLEVEL%"== "15" (
-    ECHO "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\src" | clip
+    ECHO "C:\techuser\doctypes\%doctype%\transform\src" | clip
     GOTO antrunner
 )
 
@@ -121,8 +121,8 @@ IF "%ERRORLEVEL%"== "15" (
 ::RUN TARGET
 
 CLS
-ECHO "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\src" | clip
-CALL ant "-DinputManual=%thisManual%" -buildfile C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\apache.ant %target%
+ECHO "C:\techuser\doctypes\%doctype%\transform\src" | clip
+CALL ant "-DinputManual=%thisManual%" -buildfile C:\techuser\doctypes\%doctype%\transform\apache.ant %target%
 PAUSE
 
 :viewfile
@@ -140,7 +140,7 @@ ECHO.
 
 CHOICE /C asdfqwrxcumnyp /N /CS /M "Pick a target%pmsg%: "
 IF "%ERRORLEVEL%" == "14" (
-        ECHO "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\src" | clip
+        ECHO "C:\techuser\doctypes\%doctype%\transform\src" | clip
         GOTO viewfile
 )
 IF "%ERRORLEVEL%" == "13" (
@@ -163,9 +163,9 @@ IF "%ERRORLEVEL%" == "4" SET choicer=tmp\!thisManual:~0,-4!-reloaded.xml
 IF "%ERRORLEVEL%" == "3" SET choicer=tmp\!thisManual:~0,-4!-temp.xml
 IF "%ERRORLEVEL%" == "2" SET choicer=tmp\!thisManual:~0,-4!-init.xml
 IF "%ERRORLEVEL%" == "1" SET choicer=tmp\!thisManual:~0,-4!-clean.xml
-IF '%pretty%'=='n' START "C:\Program Files\firstobject\foxe.exe" "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\!choicer!"
+IF '%pretty%'=='n' START "C:\Program Files\firstobject\foxe.exe" "C:\techuser\doctypes\%doctype%\transform\!choicer!"
 IF '%pretty%'=='y' (
-    tidy -xml --indent auto --indent-attributes yes --indent-spaces 10 --uppercase-tags yes "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\!choicer!" > "C:\Users\s064075\Desktop\temp\!choicer!"
+    tidy -xml --indent auto --indent-attributes yes --indent-spaces 10 --uppercase-tags yes "C:\techuser\doctypes\%doctype%\transform\!choicer!" > "C:\Users\s064075\Desktop\temp\!choicer!"
     START "C:\Program Files\firstobject\foxe.exe" "C:\Users\s064075\Desktop\temp\!choicer!"
 )
 GOTO viewfile
@@ -220,7 +220,7 @@ IF '!expression!'=='u' GOTO antrunner
 IF '!expression!'=='m' GOTO manual
 IF '!expression!'=='n' GOTO begin
 IF '!expression!'=='p' SET "thisManual=%manual%-xPath.xml" && SET target=[RUN]basic && GOTO runANT
-SET "root=C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%"
+SET "root=C:\techuser\doctypes\%doctype%"
 SET "dtd=%root%\%doctype%.dtd"
 SET thisFile="%root%\transform\!choicer!"
 IF '!expression!'=='o' GOTO xpathWithRoot
@@ -248,15 +248,15 @@ GOTO xpath
 
 :runSHORT
 SET /p shortChapters="enter chapters for short "
-ECHO "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\src" | clip
+ECHO "C:\techuser\doctypes\%doctype%\transform\src" | clip
 ECHO "%doctype%"
 ECHO !manual!
 IF NOT "!manual!"=="MIP_CRJ" ( 
-    CALL ant "-DinputManual=%thisManual%" "-Dpname=chapters" "-Dchapters=%shortChapters%" -buildfile C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\apache.ant %target%
+    CALL ant "-DinputManual=%thisManual%" "-Dpname=chapters" "-Dchapters=%shortChapters%" -buildfile C:\techuser\doctypes\%doctype%\transform\apache.ant %target%
 )
 IF "!manual!"=="MIP_CRJ" (
     SET /p shortInspections="enter inspections for short "
-    CALL ant "-DinputManual=!thisManual!" "-Dpname=chapters" "-Dchapters=!shortChapters!" "-Diname=inspections" "-Dinspections=!shortInspections!" -buildfile C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\apache.ant %target%
+    CALL ant "-DinputManual=!thisManual!" "-Dpname=chapters" "-Dchapters=!shortChapters!" "-Diname=inspections" "-Dinspections=!shortInspections!" -buildfile C:\techuser\doctypes\%doctype%\transform\apache.ant %target%
 )
 PAUSE
 GOTO viewfile

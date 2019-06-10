@@ -39,7 +39,7 @@ IF '%choice%'=='1' (
     SET /p correctFile="fromEditor file up to date? copy?"
 
     IF !correctFile!==n GOTO eclipse
-    CALL fromEditCopy.bat "Maintenance Inspection Program (mip).xml" "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\swMIP_ERJ175\transform\docs"
+    CALL fromEditCopy.bat "Maintenance Inspection Program (mip).xml" "C:\techuser\doctypes\swMIP_ERJ175\transform\docs"
     :eclipse
     SET /p runEclipse="run eclipse?"
     IF !runEclipse!==n (
@@ -63,7 +63,7 @@ IF '%choice%'=='2' (
     SET /p correctFile="fromEditor file up to date? copy?"
 
     IF !correctFile!==n GOTO eclipse
-    CALL fromEditCopy.bat "MIP CRJ 200.xml" "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\swMIP_CRJ\transform\docs"
+    CALL fromEditCopy.bat "MIP CRJ 200.xml" "C:\techuser\doctypes\swMIP_CRJ\transform\docs"
     :eclipse
     SET /p runEclipse="run eclipse?"
     IF !runEclipse!==n (
@@ -86,7 +86,7 @@ IF '%choice%'=='3' (
     SET /p correctFile="fromEditor file up to date? copy?"
 
     IF !correctFile!==n GOTO eclipse
-    CALL fromEditCopy.bat "CRJ 700 MIP - Rev 25.xml" "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\swMIP_CRJ\transform\docs"
+    CALL fromEditCopy.bat "CRJ 700 MIP - Rev 25.xml" "C:\techuser\doctypes\swMIP_CRJ\transform\docs"
     :eclipse
     SET /p runEclipse="run eclipse?"
     IF !runEclipse!==n (
@@ -109,7 +109,7 @@ IF '%choice%'=='4' (
     SET /p correctFile="fromEditor file up to date? copy?"
 
     IF !correctFile!==n GOTO eclipse
-    CALL fromEditCopy.bat "CRJ 900 MIP - Rev 27.xml" "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\swMIP_CRJ\transform\docs"
+    CALL fromEditCopy.bat "CRJ 900 MIP - Rev 27.xml" "C:\techuser\doctypes\swMIP_CRJ\transform\docs"
     :eclipse
     SET /p runEclipse="run eclipse?"
     IF !runEclipse!==n (

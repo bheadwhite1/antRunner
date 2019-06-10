@@ -138,7 +138,7 @@ ECHO.
 PAUSE
 
 CLS
-START ant -buildfile C:\Git\SkyWestAirlines\skywest-techuser-44\SkyWestBuild.ant [development]build_and_deploy_FOR_DEV
+START ant -buildfile C:\techuser\SkyWestBuild.ant [development]build_and_deploy_FOR_DEV
 GOTO begin
 
 REM :assignData
