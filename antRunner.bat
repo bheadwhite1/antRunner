@@ -23,7 +23,7 @@ ECHO.
 CHOICE /C asdfqwe1234rx /CS /N /M "Pick a target: "
 IF "%ERRORLEVEL%"== "1" SET "manual=175_AMM"
 IF "%ERRORLEVEL%"== "2" SET "manual=175_AIPC"
-IF "%ERRORLEVEL%"== "3" SET "manual=175_MIP" && SET "search=Maintenance Inspection Program (mip)"
+IF "%ERRORLEVEL%"== "3" SET "manual=175_MIP" && SET "search=Maintenance.*Program.*mip\)"
 IF "%ERRORLEVEL%"== "4" SET "manual=175_NDT"
 IF "%ERRORLEVEL%"== "5" SET "manual=175_SRMI"
 IF "%ERRORLEVEL%"== "6" SET "manual=175_SRM"
@@ -83,13 +83,6 @@ IF '%fromEditCopy%' == 'true' (
 ECHO.
 ECHO     ******* PICK A MANUAL *******
 ECHO.
-IF NOT '%fromEditCopy%' == 'true' (
-    FOR /f "usebackq delims=|" %%f in (`dir /b %loc%`) do (
-        SET /a counter+=1
-        ECHO !counter!: %%f
-        SET choicer[!counter!]=%%f
-    )
-)
 IF '%fromEditCopy%' == 'true' (
     FOR /f "usebackq delims=|" %%f in (`dir /b /O:-D "\\sgudocstage\Documents\JaredLisa\skytrackprocess\src\fromEditor"`) do (
         IF !stop! LSS 10 (
@@ -100,7 +93,9 @@ IF '%fromEditCopy%' == 'true' (
             )
         )
     )
-    CLS
+)
+CLS
+IF '%manual%' == 'MIP_CRJ' (
     FOR /f "usebackq delims=|" %%f in (`dir /b /O:-D %loc%`) do (
         ECHO %%f | findstr /r "!search! xPath" >NUL
         IF NOT ERRORLEVEL 1 (
@@ -108,6 +103,13 @@ IF '%fromEditCopy%' == 'true' (
             ECHO !counter!: %%f
             SET choicer[!counter!]=%%f
         )
+    )
+)
+IF NOT '%manual%' == 'MIP_CRJ' (
+    FOR /f "usebackq delims=|" %%f in (`dir /b %loc%`) do (
+        SET /a counter+=1
+        ECHO !counter!: %%f
+        SET choicer[!counter!]=%%f
     )
 )
 IF !counter!==0 CLS && ECHO. && ECHO nothing setup for this doctype. Try Again. && ECHO. && PAUSE && GOTO begin
