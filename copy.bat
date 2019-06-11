@@ -123,7 +123,7 @@ SET /a number=0
 SET choice=
 SET bool=f
 FOR /f "usebackq delims=|" %%f in (`dir /b /O:-D "\\sgudocstage\Documents\JaredLisa\skytrackprocess\src\fromEditor"`) do (
-    IF !counter! LSS 50 (
+    IF !counter! LSS 20 (
         ECHO %%f|find "!search!" >NUL
         SET /a counter+=1
         IF NOT ERRORLEVEL 1 (

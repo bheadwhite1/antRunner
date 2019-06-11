@@ -19,9 +19,9 @@ SET docFolder=
 :pickTimer
 MODE con: cols=48 lines=10
 
-ECHO 1. Publish to QA
-ECHO 2. Distribute to QA
-ECHO 3. Distribute to Live
+ECHO 1. PUBLISH and DISTRIBUTE to QA
+ECHO 2. DISTRIBUTE to QA
+ECHO 3. DISTRIBUTE to Live
 ECHO.
 
 CHOICE /C 123 /M "Pick a timer: "
@@ -120,7 +120,7 @@ IF '%step%'=='GFXtoMX' GOTO MGFX
 :PUB
 IF "%doctype%"=="MIP" (
     IF "%fleet%"=="900" SET Hours=1 && SET Minutes=28 && GOTO robocopy
-    IF "%fleet%"=="700" SET Hours=1 && SET Minutes=28 &&GOTO robocopy
+    IF "%fleet%"=="700" SET Hours=1 && SET Minutes=28 && GOTO robocopy
     IF "%fleet%"=="200" SET Hours=1 && GOTO robocopy
     IF "%fleet%"=="175" SET Hours=1 && GOTO robocopy
     REM IF "%fleet%"=="175" SET Seconds=1 && GOTO robocopy

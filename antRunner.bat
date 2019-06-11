@@ -23,7 +23,7 @@ ECHO.
 CHOICE /C asdfqwe1234rx /CS /N /M "Pick a target: "
 IF "%ERRORLEVEL%"== "1" SET "manual=175_AMM"
 IF "%ERRORLEVEL%"== "2" SET "manual=175_AIPC"
-IF "%ERRORLEVEL%"== "3" SET "manual=175_MIP"
+IF "%ERRORLEVEL%"== "3" SET "manual=175_MIP" && SET "search=Maintenance Inspection Program (mip)"
 IF "%ERRORLEVEL%"== "4" SET "manual=175_NDT"
 IF "%ERRORLEVEL%"== "5" SET "manual=175_SRMI"
 IF "%ERRORLEVEL%"== "6" SET "manual=175_SRM"
@@ -37,7 +37,7 @@ IF "%ERRORLEVEL%"== "13" EXIT
 IF '%manual%'=='175_AIPC' SET "doctype=swAIPC_ERJ175" && SET "file=swaipc_erj175"
 IF '%manual%'=='175_AMM' SET "doctype=swAMM_ERJ175"
 IF '%manual%'=='175_NDT' SET "doctype=swNDT_ERJ175"
-IF '%manual%'=='175_MIP' SET "doctype=swMIP_ERJ175" && SET "file=swmip_erj175"
+IF '%manual%'=='175_MIP' SET "doctype=swMIP_ERJ175" && SET "file=swmip_erj175" && SET "fromEditCopy=true"
 IF '%manual%'=='175_SRMI' SET "doctype=swSRMI_ERJ175" && SET "file=swsrmi_erj175"
 IF '%manual%'=='175_SWPM' SET "doctype=swSWPM_ERJ175" && SET "file=swswpm_erj175"
 IF '%manual%'=='175_SRM' SET "doctype=swSRM_ERJ175" && SET "file=swsrm_erj175"
@@ -45,7 +45,7 @@ IF '%manual%'=='200_AMM' SET "doctype=swAMM_CRJ200" && SET "file=swamm_crj200"
 IF '%manual%'=='200_MIP' SET "doctype=swMIP_CRJ" && SET "file=swmip_crj200"
 IF '%manual%'=='700_MIP' SET "doctype=swMIP_CRJ" && SET "file=swmip_crj700"
 IF '%manual%'=='900_MIP' SET "doctype=swMIP_CRJ" && SET "file=swmip_crj900"
-IF '%manual%'=='MIP_CRJ' SET "doctype=swMIP_CRJ" && SET "file=swmip_crj"
+IF '%manual%'=='MIP_CRJ' SET "doctype=swMIP_CRJ" && SET "file=swmip_crj" && SET "fromEditCopy=true"
 IF '%manual%'=='skybook' SET "doctype=skybook" && SET "file=skybook"
 IF '%manual%'=='skybulletin' SET "doctype=skybulletin" && SET "file=skybulletin"
 IF '%manual%'=='forms' SET "doctype=swForms_MX" && SET "file=swforms_mx"
@@ -64,14 +64,51 @@ IF '%doctype%'=='skybulletin' SET "loc=C:\Users\s064075\Desktop\xmlDocs\%doctype
 
 CLS
 SET /a counter=0
+SET stop=0
 SET choicer=
+IF '%fromEditCopy%' == 'true' (
+    IF '!manual!' == 'MIP_CRJ' (
+        ECHO   ******* PICK A FLEET *******
+        ECHO.
+        ECHO  1. 200
+        ECHO  2. 700
+        ECHO  3. 900
+        ECHO.
+        CHOICE /C 123 /CS /N /M "Pick a target: "
+        IF "!ERRORLEVEL!" == "1" SET "search=CRJ.*200"
+        IF "!ERRORLEVEL!" == "2" SET "search=CRJ.*700"
+        IF "!ERRORLEVEL!" == "3" SET "search=CRJ.*900"
+    )
+)
 ECHO.
 ECHO     ******* PICK A MANUAL *******
 ECHO.
-FOR /f "usebackq delims=|" %%f in (`dir /b %loc%`) do (
-    SET /a counter+=1
-    ECHO !counter!: %%f
-    SET choicer[!counter!]=%%f
+IF NOT '%fromEditCopy%' == 'true' (
+    FOR /f "usebackq delims=|" %%f in (`dir /b %loc%`) do (
+        SET /a counter+=1
+        ECHO !counter!: %%f
+        SET choicer[!counter!]=%%f
+    )
+)
+IF '%fromEditCopy%' == 'true' (
+    FOR /f "usebackq delims=|" %%f in (`dir /b /O:-D "\\sgudocstage\Documents\JaredLisa\skytrackprocess\src\fromEditor"`) do (
+        IF !stop! LSS 10 (
+            ECHO %%f | findstr /r "!search!" >NUL
+            SET /a stop+=1
+            IF NOT ERRORLEVEL 1 (
+                CALL fromEditCopy.bat "%%f" "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\!doctype!\transform\docs"
+            )
+        )
+    )
+    CLS
+    FOR /f "usebackq delims=|" %%f in (`dir /b /O:-D %loc%`) do (
+        ECHO %%f | findstr /r "!search! xPath" >NUL
+        IF NOT ERRORLEVEL 1 (
+            SET /a counter+=1
+            ECHO !counter!: %%f
+            SET choicer[!counter!]=%%f
+        )
+    )
 )
 IF !counter!==0 CLS && ECHO. && ECHO nothing setup for this doctype. Try Again. && ECHO. && PAUSE && GOTO begin
 IF !counter!==1 SET "num=1" && GOTO onlyone
