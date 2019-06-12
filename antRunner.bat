@@ -75,9 +75,9 @@ IF '%fromEditCopy%' == 'true' (
         ECHO  3. 900
         ECHO.
         CHOICE /C 123 /CS /N /M "Pick a target: "
-        IF "!ERRORLEVEL!" == "1" SET "search=CRJ.*200"
-        IF "!ERRORLEVEL!" == "2" SET "search=CRJ.*700"
-        IF "!ERRORLEVEL!" == "3" SET "search=CRJ.*900"
+        IF "!ERRORLEVEL!" == "1" SET "search=CRJ.*200" && SET "manual=200_MIP_CRJ"
+        IF "!ERRORLEVEL!" == "2" SET "search=CRJ.*700" && SET "manual=700_MIP_CRJ"
+        IF "!ERRORLEVEL!" == "3" SET "search=CRJ.*900" && SET "manual=900_MIP_CRJ"
     )
 )
 ECHO.
@@ -95,7 +95,13 @@ IF '%fromEditCopy%' == 'true' (
     )
 )
 CLS
-IF '%manual%' == 'MIP_CRJ' (
+IF '%search%' == '' (
+    FOR /f "usebackq delims=|" %%f in (`dir /b %loc%`) do (
+        SET /a counter+=1
+        ECHO !counter!: %%f
+        SET choicer[!counter!]=%%f
+    )
+) ELSE (
     FOR /f "usebackq delims=|" %%f in (`dir /b /O:-D %loc%`) do (
         ECHO %%f | findstr /r "!search! xPath" >NUL
         IF NOT ERRORLEVEL 1 (
@@ -104,13 +110,7 @@ IF '%manual%' == 'MIP_CRJ' (
             SET choicer[!counter!]=%%f
         )
     )
-)
-IF NOT '%manual%' == 'MIP_CRJ' (
-    FOR /f "usebackq delims=|" %%f in (`dir /b %loc%`) do (
-        SET /a counter+=1
-        ECHO !counter!: %%f
-        SET choicer[!counter!]=%%f
-    )
+
 )
 IF !counter!==0 CLS && ECHO. && ECHO nothing setup for this doctype. Try Again. && ECHO. && PAUSE && GOTO begin
 IF !counter!==1 SET "num=1" && GOTO onlyone
@@ -230,7 +230,7 @@ IF "%ERRORLEVEL%" == "12" GOTO begin
 IF "%ERRORLEVEL%" == "11" GOTO manual
 IF "%ERRORLEVEL%" == "10" GOTO antrunner
 IF "%ERRORLEVEL%" == "9" GOTO viewfile
-IF "%ERRORLEVEL%" == "8" SET "thisManual=%manual%-xPath.xml" && SET target=[RUN]basic && GOTO runANT
+IF "%ERRORLEVEL%" == "8" SET "thisManual=%manual%_xPath.xml" && SET target=[RUN]basic && GOTO runANT
 IF "%ERRORLEVEL%" == "7" SET choicer=tmp\!thisManual:~0,-4!-short.xml && GOTO runxpath
 IF "%ERRORLEVEL%" == "6" SET choicer=tmp\!thisManual:~0,-4!.html && GOTO runxpath
 IF "%ERRORLEVEL%" == "5" SET choicer=docs\!thisManual! && GOTO runxpath
@@ -250,7 +250,7 @@ ECHO.
 ECHO x. select diff target             n. new doctype
 ECHO p. [RUN]basic on new file         m. new manual
 ECHO o. custom root                    u. antrunner
-ECHO                                   v. view files
+ECHO t. taskcard                        v. view files
 ECHO.
 SET /p expression="enter xpath to generate new file: "
 IF '!expression!'=='x' GOTO xpathMenu
@@ -258,16 +258,17 @@ IF '!expression!'=='v' GOTO viewfile
 IF '!expression!'=='u' GOTO antrunner
 IF '!expression!'=='m' GOTO manual
 IF '!expression!'=='n' GOTO begin
-IF '!expression!'=='p' SET "thisManual=%manual%-xPath.xml" && SET target=[RUN]basic && GOTO runANT
+IF '!expression!'=='p' SET "thisManual=%manual%_xPath.xml" && SET target=[RUN]basic && GOTO runANT
 SET "root=C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%"
 SET "dtd=%root%\%doctype%.dtd"
 SET thisFile="%root%\transform\!choicer!"
+IF '!expression!'=='t' GOTO taskcard
 IF '!expression!'=='o' GOTO xpathWithRoot
 ::working
-tidy -q -xml !thisFile! | findstr /R "?xml DOCTYPE ENTITY dtd \]> ^\[$" > %root%\transform\docs\%manual%-xPath.xml
+tidy -q -xml !thisFile! | findstr /R "?xml DOCTYPE ENTITY dtd \]> ^\[$" > %root%\transform\docs\%manual%_xPath.xml
 REM tidy -q -xml --doctype omit --numeric-entities yes !thisFile! | xml sel -t -c "%expression%"  >>  %root%\transform\docs\xPath.xml
-xml -q fo -D !thisFile! | tidy -q -xml | xml sel -t -c "%expression%"  >>  %root%\transform\docs\%manual%-xPath.xml
-START %root%\transform\docs\%manual%-xPath.xml
+xml -q fo -D !thisFile! | tidy -q -xml | xml sel -t -c "%expression%"  >>  %root%\transform\docs\%manual%_xPath.xml
+START %root%\transform\docs\%manual%_xPath.xml
 GOTO xpath
 
 :xpathWithRoot
@@ -278,11 +279,18 @@ IF '!expression!'=='v' GOTO viewfile
 IF '!expression!'=='u' GOTO antrunner
 IF '!expression!'=='m' GOTO manual
 IF '!expression!'=='n' GOTO begin
-IF '!expression!'=='p' SET "thisManual=%manual%-xPath.xml" && SET target=[RUN]basic && GOTO runANT
+IF '!expression!'=='p' SET "thisManual=%manual%_xPath.xml" && SET target=[RUN]basic && GOTO runANT
 
-tidy -q -xml !thisFile! | findstr /R "?xml DOCTYPE ENTITY dtd \]> ^\[$" > %root%\transform\docs\%manual%-xPath.xml
-xml -q fo --dropdtd !thisFile! | tidy -q -xml | xml sel -t -e "%xpathroot%" -c "%expression%" >> %root%\transform\docs\%manual%-xPath.xml
-START %root%\transform\docs\%manual%-xPath.xml
+tidy -q -xml !thisFile! | findstr /R "?xml DOCTYPE ENTITY dtd \]> ^\[$" > %root%\transform\docs\%manual%_xPath.xml
+xml -q fo --dropdtd !thisFile! | tidy -q -xml | xml sel -t -e "%xpathroot%" -c "%expression%" >> %root%\transform\docs\%manual%_xPath.xml
+START %root%\transform\docs\%manual%_xPath.xml
+GOTO xpath
+
+:taskcard
+SET /p taskKey="paste in task key: "
+tidy -q -xml !thisFile! | findstr /R "?xml DOCTYPE ENTITY dtd \]> ^\[$" > %root%\transform\docs\%manual%_xPath.xml
+xml -q fo -D !thisFile! | tidy -q -xml | xml sel -t -c "//taskcard[@key='%taskKey%'][1]"  >>  %root%\transform\docs\%manual%_xPath.xml
+START %root%\transform\docs\%manual%_xPath.xml
 GOTO xpath
 
 :runSHORT

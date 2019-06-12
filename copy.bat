@@ -13,19 +13,8 @@ ECHO.
 CHOICE /C as /CS /N /M "Copy from where? "
 IF "%ERRORLEVEL%"=="1" GOTO local
 IF "%ERRORLEVEL%"=="2" GOTO fromEditor
-::WHICH MANUAL? Version1
-REM SET /a counter=0
-REM SET choice=
-REM FOR /F "tokens=*" %%A in (assets.txt) DO (
-REM     SET /a counter+=1
-REM     ECHO !counter!: %%A
-REM     SET choice[!counter!]=%%A
-REM )
 
-REM SET /p num="Enter # of a doctype to copy: "
-REM SET manual=!choice[%num%]!
 :local
-::WHICH MANUAL? Version2
 CLS
 ECHO.
 ECHO      175          200          OTHER
