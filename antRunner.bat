@@ -5,7 +5,8 @@ PUSHD %~dp0
 :begin
 ::START
 SET "pretty=n"
-
+SET "fromEditCopy="
+SET "search="
 CLS
 ECHO.
 ECHO      *******  PICK A DOCTYPE  *******
@@ -22,7 +23,7 @@ ECHO    e. SWPM
 ECHO.
 CHOICE /C asdfqwe1234rx /CS /N /M "Pick a target: "
 IF "%ERRORLEVEL%"== "1" SET "manual=175_AMM"
-IF "%ERRORLEVEL%"== "2" SET "manual=175_AIPC"
+IF "%ERRORLEVEL%"== "2" SET "manual=175_AIPC" && SET "search=AIPC-"
 IF "%ERRORLEVEL%"== "3" SET "manual=175_MIP" && SET "search=Maintenance.*Program.*mip\)"
 IF "%ERRORLEVEL%"== "4" SET "manual=175_NDT"
 IF "%ERRORLEVEL%"== "5" SET "manual=175_SRMI"
@@ -34,7 +35,7 @@ IF "%ERRORLEVEL%"== "10" SET "manual=skybulletin"
 IF "%ERRORLEVEL%"== "11" SET "manual=forms"
 IF "%ERRORLEVEL%"== "12" SET "manual=200_AMM"
 IF "%ERRORLEVEL%"== "13" EXIT
-IF '%manual%'=='175_AIPC' SET "doctype=swAIPC_ERJ175" && SET "file=swaipc_erj175"
+IF '%manual%'=='175_AIPC' SET "doctype=swAIPC_ERJ175" && SET "file=swaipc_erj175" && SET "fromEditCopy=true"
 IF '%manual%'=='175_AMM' SET "doctype=swAMM_ERJ175"
 IF '%manual%'=='175_NDT' SET "doctype=swNDT_ERJ175"
 IF '%manual%'=='175_MIP' SET "doctype=swMIP_ERJ175" && SET "file=swmip_erj175" && SET "fromEditCopy=true"
@@ -59,9 +60,12 @@ SET "loc=C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform
 IF '%doctype%'=='skybook' SET "loc=C:\Users\s064075\Desktop\xmlDocs\%doctype%\src"
 IF '%doctype%'=='skybulletin' SET "loc=C:\Users\s064075\Desktop\xmlDocs\%doctype%\src"
 
+::SET skywest revision docs
+SET "skydocs=transform\docs"
+IF '%doctype%'=='swAIPC_ERJ175' SET "skydocs=processes\docs"
+
 :manual
 ::SELECT A MANUAL
-
 CLS
 SET /a counter=0
 SET stop=0
@@ -75,25 +79,28 @@ IF '%fromEditCopy%' == 'true' (
         ECHO  3. 900
         ECHO.
         CHOICE /C 123 /CS /N /M "Pick a target: "
-        IF "!ERRORLEVEL!" == "1" SET "search=CRJ.*200" && SET "manual=200_MIP_CRJ"
-        IF "!ERRORLEVEL!" == "2" SET "search=CRJ.*700" && SET "manual=700_MIP_CRJ"
-        IF "!ERRORLEVEL!" == "3" SET "search=CRJ.*900" && SET "manual=900_MIP_CRJ"
+        IF "!ERRORLEVEL!" == "1" SET "search=CRJ.*200" && SET "manual=200-MIP" && SET "TUdoctype=swMIP_CRJ200"
+        IF "!ERRORLEVEL!" == "2" SET "search=CRJ.*700" && SET "manual=700-MIP" && SET "TUdoctype=swMIP_CRJ700"
+        IF "!ERRORLEVEL!" == "3" SET "search=CRJ.*900" && SET "manual=900-MIP" && SET "TUdoctype=swMIP_CRJ900"
     )
 )
 ECHO.
 ECHO     ******* PICK A MANUAL *******
 ECHO.
+::copy in from fromEditor to \processes\docs or \transform\docs
 IF '%fromEditCopy%' == 'true' (
     FOR /f "usebackq delims=|" %%f in (`dir /b /O:-D "\\sgudocstage\Documents\JaredLisa\skytrackprocess\src\fromEditor"`) do (
         IF !stop! LSS 10 (
             ECHO %%f | findstr /r "!search!" >NUL
             SET /a stop+=1
             IF NOT ERRORLEVEL 1 (
-                CALL fromEditCopy.bat "%%f" "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\!doctype!\transform\docs"
+                CALL fromEditCopy.bat "%%f" "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\!doctype!\!skydocs!"
             )
         )
     )
+    IF '!doctype!'=='swAIPC_ERJ175' SET "search="
 )
+::display manuals in \transform\docs
 CLS
 IF '%search%' == '' (
     FOR /f "usebackq delims=|" %%f in (`dir /b %loc%`) do (
@@ -128,14 +135,14 @@ GOTO viewfile
 CLS
 ECHO.
 ECHO                      ******* ANTRUNNER *******
-ECHO            doctype - %manual%     Manual - %thisManual%
+ECHO            doctype - %doctype%     Manual - %thisManual%
 ECHO.
-ECHO a. prepare     q. [RUN]basic   z. [RUN]reports   p. copy path      n. new doctype     
-ECHO s. convert     w. makeHTML                                         m. new manual
-ECHO d. addTOC      e. doShort                                          v. view Files
-ECHO f. finalize    r. [RUN]short   t. [DEPLOY]                         x. xPath
+ECHO a. prepare     q. [RUN]basic   z. [RUN]reports   p. copy path       n. new doctype     
+ECHO s. convert     w. makeHTML                       g. local graphics  m. new manual
+ECHO d. addTOC      e. doShort                                           v. view Files
+ECHO f. finalize    r. [RUN]short   t. [DEPLOY]                          x. xPath
 ECHO.
-CHOICE /C asdfqwertzxvmnp /N /M "Pick a target: "
+CHOICE /C asdfqwertzxvmnpg /N /M "Pick a target: "
 IF "%ERRORLEVEL%"== "1" SET target=prepare
 IF "%ERRORLEVEL%"== "2" SET target=convert
 IF "%ERRORLEVEL%"== "3" SET target=addTOC
@@ -154,6 +161,7 @@ IF "%ERRORLEVEL%"== "15" (
     ECHO "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\src" | clip
     GOTO antrunner
 )
+IF "%ERRORLEVEL%"== "16" GOTO localGraphics
 
 
 :runANT
@@ -169,7 +177,7 @@ PAUSE
 CLS
 ECHO.
 ECHO                       ******* FILE VIEWER *******
-ECHO               doctype - %manual%     Manual - %thisManual%
+ECHO               doctype - %doctype%     Manual - %thisManual%
 ECHO.
 ECHO a. clean (prepare)         q. original     c. runANT (same target)     n. new doctype
 ECHO s. init (convert)          w. html         p. copy path                m. new manual
@@ -230,7 +238,7 @@ IF "%ERRORLEVEL%" == "12" GOTO begin
 IF "%ERRORLEVEL%" == "11" GOTO manual
 IF "%ERRORLEVEL%" == "10" GOTO antrunner
 IF "%ERRORLEVEL%" == "9" GOTO viewfile
-IF "%ERRORLEVEL%" == "8" SET "thisManual=%manual%_xPath.xml" && SET target=[RUN]basic && GOTO runANT
+IF "%ERRORLEVEL%" == "8" SET "thisManual=%manual%xPath.xml" && SET target=[RUN]basic && GOTO runANT
 IF "%ERRORLEVEL%" == "7" SET choicer=tmp\!thisManual:~0,-4!-short.xml && GOTO runxpath
 IF "%ERRORLEVEL%" == "6" SET choicer=tmp\!thisManual:~0,-4!.html && GOTO runxpath
 IF "%ERRORLEVEL%" == "5" SET choicer=docs\!thisManual! && GOTO runxpath
@@ -258,17 +266,17 @@ IF '!expression!'=='v' GOTO viewfile
 IF '!expression!'=='u' GOTO antrunner
 IF '!expression!'=='m' GOTO manual
 IF '!expression!'=='n' GOTO begin
-IF '!expression!'=='p' SET "thisManual=%manual%_xPath.xml" && SET target=[RUN]basic && GOTO runANT
+IF '!expression!'=='p' SET "thisManual=%manual%xPath.xml" && SET target=[RUN]basic && GOTO runANT
 SET "root=C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%"
 SET "dtd=%root%\%doctype%.dtd"
 SET thisFile="%root%\transform\!choicer!"
 IF '!expression!'=='t' GOTO taskcard
 IF '!expression!'=='o' GOTO xpathWithRoot
 ::working
-tidy -q -xml !thisFile! | findstr /R "?xml DOCTYPE ENTITY dtd \]> ^\[$" > %root%\transform\docs\%manual%_xPath.xml
+tidy -q -xml !thisFile! | findstr /R "?xml DOCTYPE ENTITY dtd \]> ^\[$" > %root%\transform\docs\%manual%xPath.xml
 REM tidy -q -xml --doctype omit --numeric-entities yes !thisFile! | xml sel -t -c "%expression%"  >>  %root%\transform\docs\xPath.xml
-xml -q fo -D !thisFile! | tidy -q -xml | xml sel -t -c "%expression%"  >>  %root%\transform\docs\%manual%_xPath.xml
-START %root%\transform\docs\%manual%_xPath.xml
+xml -q fo -D !thisFile! | tidy -q -xml | xml sel -t -c "%expression%"  >>  %root%\transform\docs\%manual%xPath.xml
+START %root%\transform\docs\%manual%xPath.xml
 GOTO xpath
 
 :xpathWithRoot
@@ -279,18 +287,18 @@ IF '!expression!'=='v' GOTO viewfile
 IF '!expression!'=='u' GOTO antrunner
 IF '!expression!'=='m' GOTO manual
 IF '!expression!'=='n' GOTO begin
-IF '!expression!'=='p' SET "thisManual=%manual%_xPath.xml" && SET target=[RUN]basic && GOTO runANT
+IF '!expression!'=='p' SET "thisManual=%manual%xPath.xml" && SET target=[RUN]basic && GOTO runANT
 
-tidy -q -xml !thisFile! | findstr /R "?xml DOCTYPE ENTITY dtd \]> ^\[$" > %root%\transform\docs\%manual%_xPath.xml
-xml -q fo --dropdtd !thisFile! | tidy -q -xml | xml sel -t -e "%xpathroot%" -c "%expression%" >> %root%\transform\docs\%manual%_xPath.xml
-START %root%\transform\docs\%manual%_xPath.xml
+tidy -q -xml !thisFile! | findstr /R "?xml DOCTYPE ENTITY dtd \]> ^\[$" > %root%\transform\docs\%manual%xPath.xml
+xml -q fo --dropdtd !thisFile! | tidy -q -xml | xml sel -t -e "%xpathroot%" -c "%expression%" >> %root%\transform\docs\%manual%xPath.xml
+START %root%\transform\docs\%manual%xPath.xml
 GOTO xpath
 
 :taskcard
 SET /p taskKey="paste in task key: "
-tidy -q -xml !thisFile! | findstr /R "?xml DOCTYPE ENTITY dtd \]> ^\[$" > %root%\transform\docs\%manual%_xPath.xml
-xml -q fo -D !thisFile! | tidy -q -xml | xml sel -t -c "//taskcard[@key='%taskKey%'][1]"  >>  %root%\transform\docs\%manual%_xPath.xml
-START %root%\transform\docs\%manual%_xPath.xml
+tidy -q -xml !thisFile! | findstr /R "?xml DOCTYPE ENTITY dtd \]> ^\[$" > %root%\transform\docs\%manual%xPath.xml
+xml -q fo -D !thisFile! | tidy -q -xml | xml sel -t -c "//taskcard[@key='%taskKey%'][1]"  >>  %root%\transform\docs\%manual%xPath.xml
+START %root%\transform\docs\%manual%xPath.xml
 GOTO xpath
 
 :runSHORT
@@ -307,5 +315,41 @@ IF "!manual!"=="MIP_CRJ" (
 )
 PAUSE
 GOTO viewfile
+
+:localGraphics
+::DISTRIBUTE GRAPHICS LOCALLY
+SET "localLib=C:\techuser\data\OO_MX"
+:bookfolder
+SET /a counter=0
+SET "num="
+ECHO path: !localLib!
+FOR /f "usebackq delims=|" %%f in (`dir /b %localLib%`) do (
+    ::if you find graphic/xml strings add to bookFolderPath; if bfp is >1 we found bfp and can exit the folder sequence engine
+    ECHO %%f | findstr /r "^graphic ^xml">NUL
+    IF NOT ERRORLEVEL 1 (
+        SET /a bfp+=1
+        IF !bfp! GTR 1 (
+            GOTO bfp
+        )
+    )
+)
+FOR /f "usebackq delims=|" %%f in (`dir /b %localLib%`) do (
+    ECHO %%f | findstr /r "^.gitignore ^techsuite.*.db ^icon" >NUL
+    IF ERRORLEVEL 1 (
+        SET /a counter+=1
+        ECHO !counter!: %%f
+        SET choicer[!counter!]=%%f
+    )
+)
+SET /p num="choose a folder: "
+CLS
+SET "folder=\!choicer[%num%]!"
+SET "localLib=!localLib!%folder%"
+GOTO bookfolder
+
+:bfp
+call ant -Dbookfolder=!localLib! -file C:\techuser\doctypes\!TUdoctype!\build.xml [DIST.LOCAL]
+pause
+GOTO antrunner
 
 :end
