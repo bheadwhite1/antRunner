@@ -198,18 +198,18 @@ IF "%ERRORLEVEL%" == "13" (
         SET "pretty=n" && SET "pmsg=" && GOTO viewfile
     )
 )
-IF "%ERRORLEVEL%" == "12" GOTO begin
-IF "%ERRORLEVEL%" == "11" GOTO manual
-IF "%ERRORLEVEL%" == "10" GOTO antrunner
-IF "%ERRORLEVEL%" == "9" GOTO runANT
-IF "%ERRORLEVEL%" == "8" GOTO xpath
-IF "%ERRORLEVEL%" == "7" SET choicer=tmp\!thisManual:~0,-4!-short.xml
-IF "%ERRORLEVEL%" == "6" SET choicer=tmp\!thisManual:~0,-4!.html
-IF "%ERRORLEVEL%" == "5" SET choicer=docs\!thisManual!
-IF "%ERRORLEVEL%" == "4" SET choicer=tmp\!thisManual:~0,-4!-reloaded.xml
-IF "%ERRORLEVEL%" == "3" SET choicer=tmp\!thisManual:~0,-4!-temp.xml
-IF "%ERRORLEVEL%" == "2" SET choicer=tmp\!thisManual:~0,-4!-init.xml
 IF "%ERRORLEVEL%" == "1" SET choicer=tmp\!thisManual:~0,-4!-clean.xml
+IF "%ERRORLEVEL%" == "2" SET choicer=tmp\!thisManual:~0,-4!-init.xml
+IF "%ERRORLEVEL%" == "3" SET choicer=tmp\!thisManual:~0,-4!-temp.xml
+IF "%ERRORLEVEL%" == "4" SET choicer=tmp\!thisManual:~0,-4!-reloaded.xml
+IF "%ERRORLEVEL%" == "5" SET choicer=docs\!thisManual!
+IF "%ERRORLEVEL%" == "6" SET choicer=tmp\!thisManual:~0,-4!.html
+IF "%ERRORLEVEL%" == "7" SET choicer=tmp\!thisManual:~0,-4!-short.xml
+IF "%ERRORLEVEL%" == "8" GOTO xpath
+IF "%ERRORLEVEL%" == "9" GOTO runANT
+IF "%ERRORLEVEL%" == "10" GOTO antrunner
+IF "%ERRORLEVEL%" == "11" GOTO manual
+IF "%ERRORLEVEL%" == "12" GOTO begin
 IF '%pretty%'=='n' START "C:\Program Files\firstobject\foxe.exe" "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\!choicer!"
 IF '%pretty%'=='y' (
     tidy -xml --indent auto --indent-attributes yes --indent-spaces 10 --uppercase-tags yes "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\!choicer!" > "C:\Users\s064075\Desktop\temp\!choicer!"
