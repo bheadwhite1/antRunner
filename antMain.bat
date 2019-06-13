@@ -6,7 +6,7 @@ PUSHD %~dp0
 CLS
 ECHO a. AntRunner/xPath     b. Build for Dev
 ECHO s. Copy script         w. Watch css
-ECHO d. Tech Publisher
+ECHO d. Timer
 ECHO f. Open ContentURL
 
 CHOICE /C asdfbw /CS /N /M "Pick a task: "

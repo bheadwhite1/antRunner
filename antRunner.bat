@@ -341,13 +341,17 @@ FOR /f "usebackq delims=|" %%f in (`dir /b %localLib%`) do (
         SET choicer[!counter!]=%%f
     )
 )
+IF '%counter%' == '1' SET "folder=\!choicer[1]!" && GOTO folderset
 SET /p num="choose a folder: "
+IF '%num%'=='b' GOTO antrunner
 CLS
 SET "folder=\!choicer[%num%]!"
+:folderset
 SET "localLib=!localLib!%folder%"
 GOTO bookfolder
 
 :bfp
+MODE con:lines=1000
 call ant -Dbookfolder=!localLib! -file C:\techuser\doctypes\!TUdoctype!\build.xml [DIST.LOCAL]
 pause
 GOTO antrunner
