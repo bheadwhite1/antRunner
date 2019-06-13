@@ -258,7 +258,7 @@ ECHO.
 ECHO x. select diff target             n. new doctype
 ECHO p. [RUN]basic on new file         m. new manual
 ECHO o. custom root                    u. antrunner
-ECHO t. taskcard                        v. view files
+ECHO t. taskcard                       v. view files
 ECHO.
 SET /p expression="enter xpath to generate new file: "
 IF '!expression!'=='x' GOTO xpathMenu
