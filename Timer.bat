@@ -219,6 +219,4 @@ IF '%step%'=='toLive' SET "step=GFXtoLive" && GOTO assigndata
 IF '%MX%'=='y' SET "step=toMX" && GOTO assigndata
 IF '%step%'=='toMX' SET "step=GFXtoMX" && GOTO assigndata
 :end
-SET /p again="Play again? "
-IF !again!==y GOTO pickTimer
 EXIT

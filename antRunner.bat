@@ -138,11 +138,11 @@ ECHO                      ******* ANTRUNNER *******
 ECHO            doctype - %doctype%     Manual - %thisManual%
 ECHO.
 ECHO a. prepare     q. [RUN]basic   z. [RUN]reports   p. copy path       n. new doctype     
-ECHO s. convert     w. makeHTML                       g. local graphics  m. new manual
-ECHO d. addTOC      e. doShort                                           v. view Files
+ECHO s. convert     w. makeHTML     u. docInit        g. local graphics  m. new manual
+ECHO d. addTOC      e. doShort                        y. buildMIPfleet   v. view Files
 ECHO f. finalize    r. [RUN]short   t. [DEPLOY]                          x. xPath
 ECHO.
-CHOICE /C asdfqwertzxvmnpg /N /M "Pick a target: "
+CHOICE /C asdfqwertzxvmnpguy /N /M "Pick a target: "
 IF "%ERRORLEVEL%"== "1" SET target=prepare
 IF "%ERRORLEVEL%"== "2" SET target=convert
 IF "%ERRORLEVEL%"== "3" SET target=addTOC
@@ -162,6 +162,8 @@ IF "%ERRORLEVEL%"== "15" (
     GOTO antrunner
 )
 IF "%ERRORLEVEL%"== "16" GOTO localGraphics
+IF "%ERRORLEVEL%"== "17" SET target=docInit
+IF "%ERRORLEVEL%"== "18" GOTO buildMIPfleet
 
 
 :runANT
@@ -304,8 +306,6 @@ GOTO xpath
 :runSHORT
 SET /p shortChapters="enter chapters for short "
 ECHO "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\src" | clip
-ECHO "%doctype%"
-ECHO !manual!
 IF NOT "!manual!"=="MIP_CRJ" ( 
     CALL ant "-DinputManual=%thisManual%" "-Dpname=chapters" "-Dchapters=%shortChapters%" -buildfile C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\apache.ant %target%
 )
@@ -315,6 +315,12 @@ IF "!manual!"=="MIP_CRJ" (
 )
 PAUSE
 GOTO viewfile
+
+:buildMIPfleet
+MODE con:lines=1000
+CALL ant "-Dpname1=build.dir" "-Dvalue1=all Fleets" "-Dpname2=current.fleets" "-Dvalue2=swMIP_CRJ200,swMIP_CRJ700,swMIP_CRJ900" "-DinputManual=I am just developing a build..." -f C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\swMIP_CRJ\transform\apache.ant [DEVELOP]buildForIndividualFleets
+pause
+GOTO antrunner
 
 :localGraphics
 ::DISTRIBUTE GRAPHICS LOCALLY
