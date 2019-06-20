@@ -26,7 +26,7 @@ REM ::4thFile
 REM FOR /F "TOKENS=1-8 delims=/" %%A IN ("%contentPath%") DO SET "thirdPath=%%A/%%B/%%C/%%D/%%E/%%H"
 REM ::lastFile
 REM FOR /F "TOKENS=1-9 delims=/" %%A IN ("%contentPath%") DO SET "fourthPath=%%A/%%B/%%C/%%D/%%E/%%I"
-FOR /F "TOKENS=1-7 delims=/" %%A IN ("%contentPath%") DO SET "lastFile=%%A/%%B/%%C/%%D/%%E/!last!"
+FOR /F "TOKENS=1-7 delims=/" %%A IN ("%contentPath%") DO SET "lastFile=%%A\%%B\%%C\%%D\%%E\!last!"
 
 IF '%env%'=='localhost:8080' (
     START "C:\Program Files\firstobject\foxe.exe" "C:\techuser\data\!lastFile!.xml"
@@ -37,10 +37,9 @@ IF '%env%'=='sgutviewdevstage01' (
 IF '%env%'=='sgutviewdevqa01' (
     START "C:\Program Files\firstobject\foxe.exe" "\\sgutviewdevqa01\e$\techuser\data\!lastFile!.xml"
 )
-IF '%env%'=='sgutviewstage01' (
+IF '%env%'=='sgutviewstage01.skywest.com' (
     START "C:\Program Files\firstobject\foxe.exe" "\\sgutviewstage01\e$\techuser\data\!lastFile!.xml"
 )
-
 IF '%env%'=='sgutviewqa01' (
     START "C:\Program Files\firstobject\foxe.exe" "\\sgutviewqa01\e$\techuser\data\!lastFile!.xml"
 )

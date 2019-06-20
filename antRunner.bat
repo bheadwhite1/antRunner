@@ -23,7 +23,7 @@ ECHO    e. SWPM
 ECHO.
 CHOICE /C asdfqwe1234rx /CS /N /M "Pick a target: "
 IF "%ERRORLEVEL%"== "1" SET "manual=175_AMM"
-IF "%ERRORLEVEL%"== "2" SET "manual=175_AIPC" && SET "search=AIPC-"
+IF "%ERRORLEVEL%"== "2" SET "manual=175_AIPC" && SET "search=AIPC"
 IF "%ERRORLEVEL%"== "3" SET "manual=175_MIP" && SET "search=Maintenance.*Program.*mip\)"
 IF "%ERRORLEVEL%"== "4" SET "manual=175_NDT"
 IF "%ERRORLEVEL%"== "5" SET "manual=175_SRMI"
@@ -90,7 +90,7 @@ ECHO.
 ::copy in from fromEditor to \processes\docs or \transform\docs
 IF '%fromEditCopy%' == 'true' (
     FOR /f "usebackq delims=|" %%f in (`dir /b /O:-D "\\sgudocstage\Documents\JaredLisa\skytrackprocess\src\fromEditor"`) do (
-        IF !stop! LSS 10 (
+        IF !stop! LSS 50 (
             ECHO %%f | findstr /r "!search!" >NUL
             SET /a stop+=1
             IF NOT ERRORLEVEL 1 (
