@@ -1,7 +1,7 @@
 @ECHO off
 SETLOCAL enabledelayedexpansion
 PUSHD %~dp0
-
+MODE con:lines=1000
 :begin
 ::START
 SET "pretty=n"
@@ -99,6 +99,7 @@ IF '%fromEditCopy%' == 'true' (
         )
     )
     IF '!doctype!'=='swAIPC_ERJ175' SET "search="
+    pause
 )
 ::display manuals in \transform\docs
 CLS
@@ -171,9 +172,7 @@ IF "%ERRORLEVEL%"== "18" GOTO buildMIPfleet
 
 CLS
 ECHO "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\src" | clip
-CALL ant "-DinputManual=%thisManual%" -buildfile C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\apache.ant %target%
-PAUSE
-
+START ant "-DinputManual=%thisManual%" -buildfile C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\apache.ant %target%
 :viewfile
 ::VIEW FILE IN FOXE
 CLS
@@ -317,7 +316,6 @@ PAUSE
 GOTO viewfile
 
 :buildMIPfleet
-MODE con:lines=1000
 CALL ant "-Dpname1=build.dir" "-Dvalue1=all Fleets" "-Dpname2=current.fleets" "-Dvalue2=swMIP_CRJ200,swMIP_CRJ700,swMIP_CRJ900" "-DinputManual=I am just developing a build..." -f C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\swMIP_CRJ\transform\apache.ant [DEVELOP]buildForIndividualFleets
 pause
 GOTO antrunner
@@ -357,7 +355,6 @@ SET "localLib=!localLib!%folder%"
 GOTO bookfolder
 
 :bfp
-MODE con:lines=1000
 call ant -Dbookfolder=!localLib! -file C:\techuser\doctypes\!TUdoctype!\build.xml [DIST.LOCAL]
 pause
 GOTO antrunner
