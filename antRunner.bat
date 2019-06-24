@@ -172,7 +172,8 @@ IF "%ERRORLEVEL%"== "18" GOTO buildMIPfleet
 
 CLS
 ECHO "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\src" | clip
-START ant "-DinputManual=%thisManual%" -buildfile C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\apache.ant %target%
+start runANT.bat "%thisManual%" "%doctype%" "%target%"
+REM START ant "-DinputManual=%thisManual%" -buildfile C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\apache.ant %target% && START /b "" CSCRIPT alert.vbs "%thisManual% runner is complete" "%thisManual%"
 :viewfile
 ::VIEW FILE IN FOXE
 CLS
@@ -307,16 +308,19 @@ SET /p shortChapters="enter chapters for short "
 ECHO "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\src" | clip
 IF NOT "!manual!"=="MIP_CRJ" ( 
     CALL ant "-DinputManual=%thisManual%" "-Dpname=chapters" "-Dchapters=%shortChapters%" -buildfile C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\apache.ant %target%
+    START /b "" CSCRIPT alert.vbs "%thisManual% runner is complete" "%thisManual%"
 )
 IF "!manual!"=="MIP_CRJ" (
     SET /p shortInspections="enter inspections for short "
     CALL ant "-DinputManual=!thisManual!" "-Dpname=chapters" "-Dchapters=!shortChapters!" "-Diname=inspections" "-Dinspections=!shortInspections!" -buildfile C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\apache.ant %target%
+    START /b "" CSCRIPT alert.vbs "MIP_CRJ runner is complete" "MIP_CRJ short"
 )
 PAUSE
 GOTO viewfile
 
 :buildMIPfleet
 CALL ant "-Dpname1=build.dir" "-Dvalue1=all Fleets" "-Dpname2=current.fleets" "-Dvalue2=swMIP_CRJ200,swMIP_CRJ700,swMIP_CRJ900" "-DinputManual=I am just developing a build..." -f C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\swMIP_CRJ\transform\apache.ant [DEVELOP]buildForIndividualFleets
+START /b "" CSCRIPT alert.vbs "MIP fleet is complete" "build MIP fleet"
 pause
 GOTO antrunner
 
@@ -356,6 +360,7 @@ GOTO bookfolder
 
 :bfp
 call ant -Dbookfolder=!localLib! -file C:\techuser\doctypes\!TUdoctype!\build.xml [DIST.LOCAL]
+START /b "" CSCRIPT alert.vbs "the bfp ant is complete" "BFP"
 pause
 GOTO antrunner
 
