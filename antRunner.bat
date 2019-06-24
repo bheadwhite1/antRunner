@@ -173,7 +173,7 @@ IF "%ERRORLEVEL%"== "18" GOTO buildMIPfleet
 CLS
 ECHO "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\src" | clip
 start runANT.bat "%thisManual%" "%doctype%" "%target%"
-REM START ant "-DinputManual=%thisManual%" -buildfile C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\apache.ant %target% && START /b "" CSCRIPT alert.vbs "%thisManual% runner is complete" "%thisManual%"
+
 :viewfile
 ::VIEW FILE IN FOXE
 CLS
@@ -268,7 +268,7 @@ IF '!expression!'=='v' GOTO viewfile
 IF '!expression!'=='u' GOTO antrunner
 IF '!expression!'=='m' GOTO manual
 IF '!expression!'=='n' GOTO begin
-IF '!expression!'=='p' SET "thisManual=%manual%xPath.xml" && SET target=[RUN]basic && GOTO runANT
+IF '!expression!'=='p' SET "thisManual=%manual%xPath.xml" && SET "target=[RUN]basic" && GOTO runANT
 SET "root=C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%"
 SET "dtd=%root%\%doctype%.dtd"
 SET thisFile="%root%\transform\!choicer!"
@@ -292,7 +292,7 @@ IF '!expression!'=='n' GOTO begin
 IF '!expression!'=='p' SET "thisManual=%manual%xPath.xml" && SET target=[RUN]basic && GOTO runANT
 
 tidy -q -xml !thisFile! | findstr /R "?xml DOCTYPE ENTITY dtd \]> ^\[$" > %root%\transform\docs\%manual%xPath.xml
-xml -q fo --dropdtd !thisFile! | tidy -q -xml | xml sel -t -e "%xpathroot%" -c "%expression%" >> %root%\transform\docs\%manual%xPath.xml
+xml -q fo --dropdtd !thisFile! | tidy -q -xml | xml sel -t -e "%xpathroot%" -c "%expression%[1]" >> %root%\transform\docs\%manual%xPath.xml
 START %root%\transform\docs\%manual%xPath.xml
 GOTO xpath
 
