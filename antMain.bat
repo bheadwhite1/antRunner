@@ -22,12 +22,6 @@ GOTO begin
 
 
 :build
-ECHO. 
-ECHO Step 1: Pull master techuser. . .
-ECHO Step 2: Merge master to local. . .
-ECHO.
-PAUSE
-
 CLS
 START ant -buildfile C:\Git\SkyWestAirlines\skywest-techuser-44\SkyWestBuild.ant [development]build_and_deploy_FOR_DEV
 GOTO begin
