@@ -320,6 +320,9 @@ IF "!manual!"=="200-MIP" GOTO runSHInspections ELSE GOTO runChapters
 SET /p shortInspections="enter inspections for short "
 CALL ant "-DinputManual=!thisManual!" "-Dpname=chapters" "-Dchapters=!shortChapters!" "-Diname=inspections" "-Dinspections=!shortInspections!" -buildfile C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\apache.ant %target%
 START /b "" CSCRIPT alert.vbs "MIP_CRJ runner is complete" "MIP_CRJ short"
+pause
+GOTO viewfile
+
 :runChapters
 CALL ant "-DinputManual=%thisManual%" "-Dpname=chapters" "-Dchapters=%shortChapters%" -buildfile C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\apache.ant %target%
 START /b "" CSCRIPT alert.vbs "%thisManual% runner is complete" "%thisManual%"
