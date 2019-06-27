@@ -139,11 +139,11 @@ ECHO                      ******* ANTRUNNER *******
 ECHO            doctype - %doctype%     Manual - %thisManual%
 ECHO.
 ECHO a. prepare     q. [RUN]basic   z. [RUN]reports   p. copy path       n. new doctype     
-ECHO s. convert     w. makeHTML     u. docInit        g. local graphics  m. new manual
+ECHO s. convert     w. makeHTML     l. processSUPs    g. local graphics  m. new manual
 ECHO d. addTOC      e. doShort                        y. buildMIPfleet   v. view Files
 ECHO f. finalize    r. [RUN]short   t. [DEPLOY]                          x. xPath
 ECHO.
-CHOICE /C asdfqwertzxvmnpguy /N /M "Pick a target: "
+CHOICE /C asdfqwertzxvmnpgly /N /M "Pick a target: "
 IF "%ERRORLEVEL%"== "1" SET target=prepare
 IF "%ERRORLEVEL%"== "2" SET target=convert
 IF "%ERRORLEVEL%"== "3" SET target=addTOC
@@ -163,7 +163,7 @@ IF "%ERRORLEVEL%"== "15" (
     GOTO antrunner
 )
 IF "%ERRORLEVEL%"== "16" GOTO localGraphics
-IF "%ERRORLEVEL%"== "17" SET target=docInit
+IF "%ERRORLEVEL%"== "17" SET "target=processSUP"
 IF "%ERRORLEVEL%"== "18" GOTO buildMIPfleet
 
 
@@ -226,7 +226,6 @@ ECHO.
 ECHO                    ******* SELECT NEW TARGET FILE *******
 ECHO            CURRENT TARGET: %choicer%
 ECHO.
-ECHO q. !thisManual! (original)
 ECHO a. !thisManual:~0,-4!-clean.xml               n. new doctype
 ECHO s. !thisManual:~0,-4!-init.xml                m. new manual                
 ECHO d. !thisManual:~0,-4!-temp.xml                u. antrunner
@@ -235,29 +234,28 @@ ECHO w. !thisManual:~0,-4!.html
 ECHO r. !thisManual:~0,-4!-short.xml
 ECHO.
 ECHO Select an file to run an xpath query on.
-CHOICE /C asdfqwrxvumn /N /CS /M "Pick a target: "
-IF "%ERRORLEVEL%" == "12" GOTO begin
-IF "%ERRORLEVEL%" == "11" GOTO manual
-IF "%ERRORLEVEL%" == "10" GOTO antrunner
-IF "%ERRORLEVEL%" == "9" GOTO viewfile
-IF "%ERRORLEVEL%" == "8" SET "thisManual=%manual%xPath.xml" && SET target=[RUN]basic && GOTO runANT
-IF "%ERRORLEVEL%" == "7" SET choicer=tmp\!thisManual:~0,-4!-short.xml && GOTO runxpath
-IF "%ERRORLEVEL%" == "6" SET choicer=tmp\!thisManual:~0,-4!.html && GOTO runxpath
-IF "%ERRORLEVEL%" == "5" SET choicer=docs\!thisManual! && GOTO runxpath
-IF "%ERRORLEVEL%" == "4" SET choicer=tmp\!thisManual:~0,-4!-reloaded.xml && GOTO runxpath
-IF "%ERRORLEVEL%" == "3" SET choicer=tmp\!thisManual:~0,-4!-temp.xml && GOTO runxpath
-IF "%ERRORLEVEL%" == "2" SET choicer=tmp\!thisManual:~0,-4!-init.xml && GOTO runxpath
-IF "%ERRORLEVEL%" == "1" SET choicer=tmp\!thisManual:~0,-4!-clean.xml && GOTO runxpath
+CHOICE /C asdfwrvumn /N /CS /M "Pick a target: "
+IF "%ERRORLEVEL%" == "10" GOTO begin
+IF "%ERRORLEVEL%" == "9" GOTO manual
+IF "%ERRORLEVEL%" == "8" GOTO antrunner
+IF "%ERRORLEVEL%" == "7" GOTO viewfile
+IF "%ERRORLEVEL%" == "6" SET choicer=tmp\!thisManual:~0,-4!-short.xml && SET "customXpath=y" && GOTO runxpath
+IF "%ERRORLEVEL%" == "5" SET choicer=tmp\!thisManual:~0,-4!.html && SET "customXpath=y" && GOTO runxpath
+IF "%ERRORLEVEL%" == "4" SET choicer=tmp\!thisManual:~0,-4!-reloaded.xml && SET "customXpath=y" && GOTO runxpath
+IF "%ERRORLEVEL%" == "3" SET choicer=tmp\!thisManual:~0,-4!-temp.xml && SET "customXpath=y" && GOTO runxpath
+IF "%ERRORLEVEL%" == "2" SET choicer=tmp\!thisManual:~0,-4!-init.xml && SET "customXpath=y" && GOTO runxpath
+IF "%ERRORLEVEL%" == "1" SET choicer=tmp\!thisManual:~0,-4!-clean.xml && && SET "customXpath=y" GOTO runxpath
 
 :xpath
 SET choicer=docs\!thisManual!
+SET "customXpath="
 :runxpath
 CLS
 ECHO.
 ECHO                    ******* XPATH RUNNER *******
 ECHO               TARGET: %choicer%
 ECHO.
-ECHO x. select diff target             n. new doctype
+ECHO x. xpath on temp files            n. new doctype
 ECHO p. [RUN]basic on new file         m. new manual
 ECHO o. custom root                    u. antrunner
 ECHO t. taskcard                       v. view files
@@ -275,9 +273,17 @@ SET thisFile="%root%\transform\!choicer!"
 IF '!expression!'=='t' GOTO taskcard
 IF '!expression!'=='o' GOTO xpathWithRoot
 ::working
+IF [%customXpath%] == [y] (
+    ECHO performing %expression% on this file: !choicer! ...
+    xml sel -t -c "%expression%" !thisFile! >  %root%\transform\docs\%manual%xPath.xml
+    GOTO launchxpathfile
+)
+ECHO running doctype entities
 tidy -q -xml !thisFile! | findstr /R "?xml DOCTYPE ENTITY dtd \]> ^\[$" > %root%\transform\docs\%manual%xPath.xml
 REM tidy -q -xml --doctype omit --numeric-entities yes !thisFile! | xml sel -t -c "%expression%"  >>  %root%\transform\docs\xPath.xml
+ECHO running xpath
 xml -q fo -D !thisFile! | tidy -q -xml | xml sel -t -c "%expression%"  >>  %root%\transform\docs\%manual%xPath.xml
+:launchxpathfile
 START %root%\transform\docs\%manual%xPath.xml
 GOTO xpath
 
@@ -306,15 +312,17 @@ GOTO xpath
 :runSHORT
 SET /p shortChapters="enter chapters for short "
 ECHO "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\src" | clip
-IF NOT "!manual!"=="MIP_CRJ" ( 
-    CALL ant "-DinputManual=%thisManual%" "-Dpname=chapters" "-Dchapters=%shortChapters%" -buildfile C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\apache.ant %target%
-    START /b "" CSCRIPT alert.vbs "%thisManual% runner is complete" "%thisManual%"
-)
-IF "!manual!"=="MIP_CRJ" (
-    SET /p shortInspections="enter inspections for short "
-    CALL ant "-DinputManual=!thisManual!" "-Dpname=chapters" "-Dchapters=!shortChapters!" "-Diname=inspections" "-Dinspections=!shortInspections!" -buildfile C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\apache.ant %target%
-    START /b "" CSCRIPT alert.vbs "MIP_CRJ runner is complete" "MIP_CRJ short"
-)
+IF "!manual!"=="MIP_CRJ" GOTO runSHInspections 
+IF "!manual!"=="700-MIP" GOTO runSHInspections 
+IF "!manual!"=="900-MIP" GOTO runSHInspections 
+IF "!manual!"=="200-MIP" GOTO runSHInspections ELSE GOTO runChapters
+:runSHInspections
+SET /p shortInspections="enter inspections for short "
+CALL ant "-DinputManual=!thisManual!" "-Dpname=chapters" "-Dchapters=!shortChapters!" "-Diname=inspections" "-Dinspections=!shortInspections!" -buildfile C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\apache.ant %target%
+START /b "" CSCRIPT alert.vbs "MIP_CRJ runner is complete" "MIP_CRJ short"
+:runChapters
+CALL ant "-DinputManual=%thisManual%" "-Dpname=chapters" "-Dchapters=%shortChapters%" -buildfile C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\apache.ant %target%
+START /b "" CSCRIPT alert.vbs "%thisManual% runner is complete" "%thisManual%"
 PAUSE
 GOTO viewfile
 
