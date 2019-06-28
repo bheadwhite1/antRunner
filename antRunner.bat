@@ -101,6 +101,7 @@ IF '%fromEditCopy%' == 'true' (
     IF '!doctype!'=='swAIPC_ERJ175' SET "search="
     pause
 )
+:displayManuals
 ::display manuals in \transform\docs
 CLS
 IF '%search%' == '' (
@@ -128,7 +129,7 @@ IF '%num%'=='b' GOTO begin
 :onlyone
 SET thisManual=!choicer[%num%]!
 SET choicer=docs\!thisManual!
-
+IF '!doctype!'=='swAIPC_ERJ175' GOTO processSUPPLEMENTS
 GOTO viewfile
 :antrunner
 ::SELECT A TARGET TO RUN IN ANTRUNNER
@@ -164,7 +165,6 @@ IF "%ERRORLEVEL%"== "15" (
 )
 IF "%ERRORLEVEL%"== "16" GOTO localGraphics
 IF "%ERRORLEVEL%"== "17" GOTO buildMIPfleet
-IF '!doctype!'=='swAIPC_ERJ175' GOTO processSUPPLEMENTS
 
 :runANT
 ::RUN TARGET
@@ -181,7 +181,7 @@ ECHO processing supplements...
 CALL ant "-DinputManual=!thisManual!" -buildfile C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\apache.ant "processSUP"
 pause
 CLS
-GOTO runANT
+GOTO viewfile
 :viewfile
 ::VIEW FILE IN FOXE
 CLS
@@ -319,7 +319,7 @@ GOTO xpath
 
 :runSHORT
 SET "shortChapters="
-SET /p shortChapters="enter chapters for %manual% short "
+SET /p shortChapters="enter chapters for %manual% short: "
 ECHO "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\src" | clip
 IF "!manual!"=="MIP_CRJ" GOTO runSHInspections 
 IF "!manual!"=="700-MIP" GOTO runSHInspections 
