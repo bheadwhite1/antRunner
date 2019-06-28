@@ -320,6 +320,7 @@ GOTO xpath
 :runSHORT
 SET "shortChapters="
 SET /p shortChapters="enter chapters for %manual% short: "
+IF "!shortChapters!" == "b" GOTO antrunner
 ECHO "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\src" | clip
 IF "!manual!"=="MIP_CRJ" GOTO runSHInspections 
 IF "!manual!"=="700-MIP" GOTO runSHInspections 
@@ -327,13 +328,20 @@ IF "!manual!"=="900-MIP" GOTO runSHInspections
 IF "!manual!"=="200-MIP" GOTO runSHInspections
 ::SHORT CHAPTER
 CALL ant "-DinputManual=%thisManual%" "-Dpname=chapters" "-Dchapters=%shortChapters%" -buildfile C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\apache.ant %target%
+IF '%target%' == 'doShort' (
+    CALL ant "-DinputManual=!thisManual!" -f C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\!doctype!\transform\apache.ant "[DEPLOY]"
+)
 START /b "" CSCRIPT alert.vbs "%thisManual% runner is complete" "%thisManual%"
 PAUSE
 GOTO viewfile
 ::SHORT CHAPTER && INSPECTIONS (MIPs)
 :runSHInspections
 SET /p shortInspections="enter inspections for short "
+IF '%shortInspections%' == 'b' GOTO antrunner
 CALL ant "-DinputManual=!thisManual!" "-Dpname=chapters" "-Dchapters=!shortChapters!" "-Diname=inspections" "-Dinspections=!shortInspections!" -buildfile C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\apache.ant %target%
+IF '%target%' == 'doShort' (
+    CALL ant "-DinputManual=!thisManual!" -f C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\!doctype!\transform\apache.ant "[DEPLOY]"
+)
 START /b "" CSCRIPT alert.vbs "MIP_CRJ runner is complete" "MIP_CRJ short"
 pause
 GOTO viewfile
