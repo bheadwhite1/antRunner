@@ -136,22 +136,22 @@ GOTO viewfile
 CLS
 ECHO.
 ECHO                      ******* ANTRUNNER *******
-ECHO            doctype - %doctype%     Manual - %thisManual%
+ECHO            doctype - %doctype%  Manual - %thisManual% 
 ECHO.
 ECHO a. prepare     q. [RUN]basic   z. [RUN]reports   p. copy path       n. new doctype     
-ECHO s. convert     w. makeHTML     l. processSUPs    g. local graphics  m. new manual
+ECHO s. convert     w. makeHTML                       g. local graphics  m. new manual
 ECHO d. addTOC      e. doShort                        y. buildMIPfleet   v. view Files
 ECHO f. finalize    r. [RUN]short   t. [DEPLOY]                          x. xPath
 ECHO.
-CHOICE /C asdfqwertzxvmnpgly /N /M "Pick a target: "
+CHOICE /C asdfqwertzxvmnpgy /N /M "Pick a target: "
 IF "%ERRORLEVEL%"== "1" SET target=prepare
 IF "%ERRORLEVEL%"== "2" SET target=convert
 IF "%ERRORLEVEL%"== "3" SET target=addTOC
 IF "%ERRORLEVEL%"== "4" SET target=finalize
 IF "%ERRORLEVEL%"== "5" SET target=[RUN]basic
 IF "%ERRORLEVEL%"== "6" SET target=makeHTML
-IF "%ERRORLEVEL%"== "7" SET target=doShort && GOTO runSHORT
-IF "%ERRORLEVEL%"== "8" SET target=[RUN]short && GOTO runSHORT
+IF "%ERRORLEVEL%"== "7" SET target=doShort
+IF "%ERRORLEVEL%"== "8" SET target=[RUN]short
 IF "%ERRORLEVEL%"== "9" SET target=[DEPLOY]
 IF "%ERRORLEVEL%"== "10" SET target=[RUN]reports
 IF "%ERRORLEVEL%"== "11" GOTO xpath
@@ -163,17 +163,25 @@ IF "%ERRORLEVEL%"== "15" (
     GOTO antrunner
 )
 IF "%ERRORLEVEL%"== "16" GOTO localGraphics
-IF "%ERRORLEVEL%"== "17" SET "target=processSUP"
-IF "%ERRORLEVEL%"== "18" GOTO buildMIPfleet
-
+IF "%ERRORLEVEL%"== "17" GOTO buildMIPfleet
+IF '!doctype!'=='swAIPC_ERJ175' GOTO processSUPPLEMENTS
 
 :runANT
 ::RUN TARGET
+IF '%target%'=='doShort' GOTO runSHORT
+IF '%target%'=='[RUN]short' GOTO runSHORT
 
 CLS
 ECHO "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\src" | clip
 start runANT.bat "%thisManual%" "%doctype%" "%target%"
+GOTO viewfile
 
+:processSUPPLEMENTS
+ECHO processing supplements...
+CALL ant "-DinputManual=!thisManual!" -buildfile C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\apache.ant "processSUP"
+pause
+CLS
+GOTO runANT
 :viewfile
 ::VIEW FILE IN FOXE
 CLS
@@ -310,12 +318,19 @@ START %root%\transform\docs\%manual%xPath.xml
 GOTO xpath
 
 :runSHORT
-SET /p shortChapters="enter chapters for short "
+SET "shortChapters="
+SET /p shortChapters="enter chapters for %manual% short "
 ECHO "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\src" | clip
 IF "!manual!"=="MIP_CRJ" GOTO runSHInspections 
 IF "!manual!"=="700-MIP" GOTO runSHInspections 
 IF "!manual!"=="900-MIP" GOTO runSHInspections 
-IF "!manual!"=="200-MIP" GOTO runSHInspections ELSE GOTO runChapters
+IF "!manual!"=="200-MIP" GOTO runSHInspections
+::SHORT CHAPTER
+CALL ant "-DinputManual=%thisManual%" "-Dpname=chapters" "-Dchapters=%shortChapters%" -buildfile C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\apache.ant %target%
+START /b "" CSCRIPT alert.vbs "%thisManual% runner is complete" "%thisManual%"
+PAUSE
+GOTO viewfile
+::SHORT CHAPTER && INSPECTIONS (MIPs)
 :runSHInspections
 SET /p shortInspections="enter inspections for short "
 CALL ant "-DinputManual=!thisManual!" "-Dpname=chapters" "-Dchapters=!shortChapters!" "-Diname=inspections" "-Dinspections=!shortInspections!" -buildfile C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\apache.ant %target%
@@ -323,11 +338,6 @@ START /b "" CSCRIPT alert.vbs "MIP_CRJ runner is complete" "MIP_CRJ short"
 pause
 GOTO viewfile
 
-:runChapters
-CALL ant "-DinputManual=%thisManual%" "-Dpname=chapters" "-Dchapters=%shortChapters%" -buildfile C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\apache.ant %target%
-START /b "" CSCRIPT alert.vbs "%thisManual% runner is complete" "%thisManual%"
-PAUSE
-GOTO viewfile
 
 :buildMIPfleet
 CALL ant "-Dpname1=build.dir" "-Dvalue1=all Fleets" "-Dpname2=current.fleets" "-Dvalue2=swMIP_CRJ200,swMIP_CRJ700,swMIP_CRJ900" "-DinputManual=I am just developing a build..." -f C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\swMIP_CRJ\transform\apache.ant [DEVELOP]buildForIndividualFleets
