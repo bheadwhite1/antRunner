@@ -252,7 +252,7 @@ IF "%ERRORLEVEL%" == "5" SET choicer=tmp\!thisManual:~0,-4!.html && SET "customX
 IF "%ERRORLEVEL%" == "4" SET choicer=tmp\!thisManual:~0,-4!-reloaded.xml && SET "customXpath=y" && GOTO runxpath
 IF "%ERRORLEVEL%" == "3" SET choicer=tmp\!thisManual:~0,-4!-temp.xml && SET "customXpath=y" && GOTO runxpath
 IF "%ERRORLEVEL%" == "2" SET choicer=tmp\!thisManual:~0,-4!-init.xml && SET "customXpath=y" && GOTO runxpath
-IF "%ERRORLEVEL%" == "1" SET choicer=tmp\!thisManual:~0,-4!-clean.xml && && SET "customXpath=y" GOTO runxpath
+IF "%ERRORLEVEL%" == "1" SET choicer=tmp\!thisManual:~0,-4!-clean.xml && SET "customXpath=y" && GOTO runxpath
 
 :xpath
 SET choicer=docs\!thisManual!
@@ -283,7 +283,7 @@ IF '!expression!'=='o' GOTO xpathWithRoot
 ::working
 IF [%customXpath%] == [y] (
     ECHO performing %expression% on this file: !choicer! ...
-    xml sel -t -c "%expression%" !thisFile! >  %root%\transform\docs\%manual%xPath.xml
+    xml sel -t -c "!expression!" !thisFile! >  %root%\transform\docs\%manual%xPath.xml
     GOTO launchxpathfile
 )
 ECHO running doctype entities
@@ -334,7 +334,7 @@ IF '%target%' == 'doShort' (
 START /b "" CSCRIPT alert.vbs "%thisManual% runner is complete" "%thisManual%"
 PAUSE
 GOTO viewfile
-::SHORT CHAPTER && INSPECTIONS (MIPs)
+::SHORT CHAPTER / INSPECTIONS (MIPs)
 :runSHInspections
 SET /p shortInspections="enter inspections for short (b=back) "
 IF '%shortInspections%' == 'b' GOTO antrunner
