@@ -6,7 +6,7 @@ PUSHD %~dp0
 CLS
 ECHO a. AntRunner/xPath     b. Build for Dev
 ECHO s. Copy script         w. Watch css
-ECHO d. Timer               t. Restart tomcat
+ECHO d. Timer               t. Toggle tomcat
 ECHO f. Open ContentURL
 
 CHOICE /C asdfbwt /CS /N /M "Pick a task: "
@@ -21,10 +21,13 @@ IF "%ERRORLEVEL%"== "6" START csswatch.bat
 IF "%ERRORLEVEL%"== "7" GOTO tomcat
 GOTO begin
 
-:tomcat 
-net stop tomcat8
-IF ERRORLEVEL 1 ECHO this is stopped && PAUSE
-net start tomcat8
-PAUSE
+:tomcat
+sc query tomcat8 | findstr RUNNING > NUL
+IF ERRORLEVEL 1 (
+    net start tomcat8
+) ELSE ( 
+    net stop tomcat8
+)
+pause
 GOTO begin
 
