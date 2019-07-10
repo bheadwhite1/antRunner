@@ -2,7 +2,7 @@
 
 @ECHO off
 SETLOCAL enabledelayedexpansion
-
+SET "foxeExe=C:\Program Files\firstobject\foxe.exe"
 SET "getclip=cscript /nologo /e:JScript "%~f0""
 
 FOR /F "tokens=*" %%F IN ('%getclip%') DO (
@@ -29,22 +29,22 @@ REM FOR /F "TOKENS=1-9 delims=/" %%A IN ("%contentPath%") DO SET "fourthPath=%%A
 FOR /F "TOKENS=1-7 delims=/" %%A IN ("%contentPath%") DO SET "lastFile=%%A\%%B\%%C\%%D\%%E\!last!"
 
 IF '%env%'=='localhost:8080' (
-    START "C:\Program Files\firstobject\foxe.exe" "C:\techuser\data\!lastFile!.xml"
+    START "!foxeExe!" "C:\techuser\data\!lastFile!.xml"
 )
 IF '%env%'=='sgutviewdevstage01' (
-    START "C:\Program Files\firstobject\foxe.exe" "\\sgutviewdevstage01\e$\techuser\data\!lastFile!.xml"
+    START "!foxeExe!" "\\sgutviewdevstage01\e$\techuser\data\!lastFile!.xml"
 )
 IF '%env%'=='sgutviewdevqa01' (
-    START "C:\Program Files\firstobject\foxe.exe" "\\sgutviewdevqa01\e$\techuser\data\!lastFile!.xml"
+    START "!foxeExe!" "\\sgutviewdevqa01\e$\techuser\data\!lastFile!.xml"
 )
 IF '%env%'=='sgutviewstage01.skywest.com' (
-    START "C:\Program Files\firstobject\foxe.exe" "\\sgutviewstage01\e$\techuser\data\!lastFile!.xml"
+    START "!foxeExe!" "\\sgutviewstage01\e$\techuser\data\!lastFile!.xml"
 )
 IF '%env%'=='sgutviewqa01' (
-    START "C:\Program Files\firstobject\foxe.exe" "\\sgutviewqa01\e$\techuser\data\!lastFile!.xml"
+    START "!foxeExe!" "\\sgutviewqa01\e$\techuser\data\!lastFile!.xml"
 )
 IF '%env%'=='techview.skywestonline.com' (
-    START "C:\Program Files\firstobject\foxe.exe" "\\skywest.com\oo\Publications\TechView\techuser\data\!lastFile!.xml"
+    START "!foxeExe!" "\\skywest.com\oo\Publications\TechView\techuser\data\!lastFile!.xml"
 )
 
 ::GRABS THE CONTENT FULL PATH
