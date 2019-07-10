@@ -7,6 +7,7 @@ MODE con:lines=1000
 SET "pretty=n"
 SET "fromEditCopy="
 SET "search="
+SET "techuserDir=C:\git\skywest-techuser"
 CLS
 ECHO.
 ECHO      *******  PICK A DOCTYPE  *******
@@ -56,7 +57,7 @@ GOTO build
 :build
 ::SET LOCATION OF BUILD FILES 
 
-SET "loc=C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\docs"
+SET "loc=!techuserDir!\doctypes\%doctype%\transform\docs"
 IF '%doctype%'=='skybook' SET "loc=C:\Users\s064075\Desktop\xmlDocs\%doctype%\src"
 IF '%doctype%'=='skybulletin' SET "loc=C:\Users\s064075\Desktop\xmlDocs\%doctype%\src"
 
@@ -94,7 +95,7 @@ IF '%fromEditCopy%' == 'true' (
             ECHO %%f | findstr /r "!search!" >NUL
             SET /a stop+=1
             IF NOT ERRORLEVEL 1 (
-                CALL fromEditCopy.bat "%%f" "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\!doctype!\!skydocs!"
+                CALL fromEditCopy.bat "%%f" "!techuserDir!\doctypes\!doctype!\!skydocs!"
             )
         )
     )
@@ -160,7 +161,7 @@ IF "%ERRORLEVEL%"== "12" GOTO viewfile
 IF "%ERRORLEVEL%"== "13" GOTO manual
 IF "%ERRORLEVEL%"== "14" GOTO begin
 IF "%ERRORLEVEL%"== "15" (
-    ECHO "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\src" | clip
+    ECHO "!techuserDir!\doctypes\%doctype%\transform\src" | clip
     GOTO antrunner
 )
 IF "%ERRORLEVEL%"== "16" GOTO localGraphics
@@ -172,13 +173,13 @@ IF '%target%'=='doShort' GOTO runSHORT
 IF '%target%'=='[RUN]short' GOTO runSHORT
 
 CLS
-ECHO "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\src" | clip
+ECHO "!techuserDir!\doctypes\%doctype%\transform\src" | clip
 start runANT.bat "%thisManual%" "%doctype%" "%target%"
 GOTO viewfile
 
 :processSUPPLEMENTS
 ECHO processing supplements...
-CALL ant "-DinputManual=!thisManual!" -buildfile C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\apache.ant "processSUP"
+CALL ant "-DinputManual=!thisManual!" -buildfile !techuserDir!\doctypes\%doctype%\transform\apache.ant "processSUP"
 pause
 CLS
 GOTO viewfile
@@ -197,7 +198,7 @@ ECHO.
 
 CHOICE /C asdfqwrxcumnyp /N /CS /M "Pick a target%pmsg%: "
 IF "%ERRORLEVEL%" == "14" (
-        ECHO "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\src" | clip
+        ECHO "!techuserDir!\doctypes\%doctype%\transform\src" | clip
         GOTO viewfile
 )
 IF "%ERRORLEVEL%" == "13" (
@@ -220,9 +221,9 @@ IF "%ERRORLEVEL%" == "9" GOTO runANT
 IF "%ERRORLEVEL%" == "10" GOTO antrunner
 IF "%ERRORLEVEL%" == "11" GOTO manual
 IF "%ERRORLEVEL%" == "12" GOTO begin
-IF '%pretty%'=='n' START "C:\Program Files\firstobject\foxe.exe" "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\!choicer!"
+IF '%pretty%'=='n' START "C:\Program Files\firstobject\foxe.exe" "!techuserDir!\doctypes\%doctype%\transform\!choicer!"
 IF '%pretty%'=='y' (
-    tidy -xml --indent auto --indent-attributes yes --indent-spaces 10 --uppercase-tags yes "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\!choicer!" > "C:\Users\s064075\Desktop\temp\!choicer!"
+    tidy -xml --indent auto --indent-attributes yes --indent-spaces 10 --uppercase-tags yes "!techuserDir!\doctypes\%doctype%\transform\!choicer!" > "C:\Users\s064075\Desktop\temp\!choicer!"
     START "C:\Program Files\firstobject\foxe.exe" "C:\Users\s064075\Desktop\temp\!choicer!"
 )
 GOTO viewfile
@@ -275,7 +276,7 @@ IF '!expression!'=='u' GOTO antrunner
 IF '!expression!'=='m' GOTO manual
 IF '!expression!'=='n' GOTO begin
 IF '!expression!'=='p' SET "thisManual=%manual%xPath.xml" && SET "target=[RUN]basic" && GOTO runANT
-SET "root=C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%"
+SET "root=!techuserDir!\doctypes\%doctype%"
 SET "dtd=%root%\%doctype%.dtd"
 SET thisFile="%root%\transform\!choicer!"
 IF '!expression!'=='t' GOTO taskcard
@@ -321,15 +322,15 @@ GOTO xpath
 SET "shortChapters="
 SET /p shortChapters="enter chapters for %manual% short (b=back): "
 IF "!shortChapters!" == "b" GOTO antrunner
-ECHO "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\src" | clip
+ECHO "!techuserDir!\doctypes\%doctype%\transform\src" | clip
 IF "!manual!"=="MIP_CRJ" GOTO runSHInspections 
 IF "!manual!"=="700-MIP" GOTO runSHInspections 
 IF "!manual!"=="900-MIP" GOTO runSHInspections 
 IF "!manual!"=="200-MIP" GOTO runSHInspections
 ::SHORT CHAPTER
-CALL ant "-DinputManual=%thisManual%" "-Dpname=chapters" "-Dchapters=%shortChapters%" -buildfile C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\apache.ant %target%
+CALL ant "-DinputManual=%thisManual%" "-Dpname=chapters" "-Dchapters=%shortChapters%" -buildfile !techuserDir!\doctypes\%doctype%\transform\apache.ant %target%
 IF '%target%' == 'doShort' (
-    CALL ant "-DinputManual=!thisManual!" -f C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\!doctype!\transform\apache.ant "[DEPLOY]"
+    CALL ant "-DinputManual=!thisManual!" -f !techuserDir!\doctypes\!doctype!\transform\apache.ant "[DEPLOY]"
 )
 START /b "" CSCRIPT alert.vbs "%thisManual% runner is complete" "%thisManual%"
 PAUSE
@@ -338,9 +339,9 @@ GOTO viewfile
 :runSHInspections
 SET /p shortInspections="enter inspections for short (b=back) "
 IF '%shortInspections%' == 'b' GOTO antrunner
-CALL ant "-DinputManual=!thisManual!" "-Dpname=chapters" "-Dchapters=!shortChapters!" "-Diname=inspections" "-Dinspections=!shortInspections!" -buildfile C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\transform\apache.ant %target%
+CALL ant "-DinputManual=!thisManual!" "-Dpname=chapters" "-Dchapters=!shortChapters!" "-Diname=inspections" "-Dinspections=!shortInspections!" -buildfile !techuserDir!\doctypes\%doctype%\transform\apache.ant %target%
 IF '%target%' == 'doShort' (
-    CALL ant "-DinputManual=!thisManual!" -f C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\!doctype!\transform\apache.ant "[DEPLOY]"
+    CALL ant "-DinputManual=!thisManual!" -f !techuserDir!\doctypes\!doctype!\transform\apache.ant "[DEPLOY]"
 )
 START /b "" CSCRIPT alert.vbs "MIP_CRJ runner is complete" "MIP_CRJ short"
 pause
@@ -348,7 +349,7 @@ GOTO viewfile
 
 
 :buildMIPfleet
-CALL ant "-Dpname1=build.dir" "-Dvalue1=all Fleets" "-Dpname2=current.fleets" "-Dvalue2=swMIP_CRJ200,swMIP_CRJ700,swMIP_CRJ900" "-DinputManual=I am just developing a build..." -f C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\swMIP_CRJ\transform\apache.ant [DEVELOP]buildForIndividualFleets
+CALL ant "-Dpname1=build.dir" "-Dvalue1=all Fleets" "-Dpname2=current.fleets" "-Dvalue2=swMIP_CRJ200,swMIP_CRJ700,swMIP_CRJ900" "-DinputManual=I am just developing a build..." -f !techuserDir!\doctypes\swMIP_CRJ\transform\apache.ant [DEVELOP]buildForIndividualFleets
 START /b "" CSCRIPT alert.vbs "MIP fleet is complete" "build MIP fleet"
 pause
 GOTO antrunner

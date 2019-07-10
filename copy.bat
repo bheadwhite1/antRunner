@@ -3,6 +3,8 @@ SETLOCAL enabledelayedexpansion
 ::operate out of the same directory of this batch
 PUSHD %~dp0
 
+SET "techuserDir=C:\git\skywest-techuser"
+
 :begin
 CLS
 ECHO COPY FROM....
@@ -64,11 +66,11 @@ IF "%ERRORLEVEL%" == "2" SET "root=\\sgutviewdevstage01\e$\"
 IF "%ERRORLEVEL%" == "1" SET "root=C:\"
 
 ::css/js copy
-ROBOCOPY "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%" "%root%techuser\doctypes\%doctype%" "%file%.css" "%file%.js" /LEV:1
+ROBOCOPY "!techuserDir!\doctypes\%doctype%" "%root%techuser\doctypes\%doctype%" "%file%.css" "%file%.js" /LEV:1
 ::processes copy
-ROBOCOPY "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\processes" "%root%techuser\doctypes\%doctype%\processes" "aa_prepareXML.xsl" "ab_doTechview.xsl" "ac_generateTOC.xsl" "ad_finalizeXML.xsl" /LEV:1
+ROBOCOPY "!techuserDir!\doctypes\%doctype%\processes" "%root%techuser\doctypes\%doctype%\processes" "aa_prepareXML.xsl" "ab_doTechview.xsl" "ac_generateTOC.xsl" "ad_finalizeXML.xsl" /LEV:1
 ::transform copy
-ROBOCOPY "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%doctype%\common\xslt" "%root%techuser\doctypes\%doctype%\common\xslt"
+ROBOCOPY "!techuserDir!\doctypes\%doctype%\common\xslt" "%root%techuser\doctypes\%doctype%\common\xslt"
 PAUSE
 GOTO end
 
@@ -137,15 +139,15 @@ ECHO.
 CHOICE /c 12 /t 10 /d 1 /cs /n /m "copy %thisManual%?"
 IF "!fleet!"=="175" (
     IF '!manual!'=='MIP' (
-        CALL fromEditCopy.bat "!thisManual!" "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\swMIP_ERJ175\transform\docs"
+        CALL fromEditCopy.bat "!thisManual!" "!techuserDir!\doctypes\swMIP_ERJ175\transform\docs"
     )
     IF '!doctype!'==AMM (
-        CALL fromEditCopy.bat "!thisManual!" "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\swAMM_ERJ175\processes\docs"
+        CALL fromEditCopy.bat "!thisManual!" "!techuserDir!\doctypes\swAMM_ERJ175\processes\docs"
     )
 )
-IF "%fleet%"=="200" CALL fromEditCopy.bat "!thisManual!" "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\swMIP_CRJ\transform\docs"
-IF "%fleet%"=="700" CALL fromEditCopy.bat "!thisManual!" "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\swMIP_CRJ\transform\docs"
-IF "%fleet%"=="900" CALL fromEditCopy.bat "!thisManual!" "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\swMIP_CRJ\transform\docs"
+IF "%fleet%"=="200" CALL fromEditCopy.bat "!thisManual!" "!techuserDir!\doctypes\swMIP_CRJ\transform\docs"
+IF "%fleet%"=="700" CALL fromEditCopy.bat "!thisManual!" "!techuserDir!\doctypes\swMIP_CRJ\transform\docs"
+IF "%fleet%"=="900" CALL fromEditCopy.bat "!thisManual!" "!techuserDir!\doctypes\swMIP_CRJ\transform\docs"
 
 :end
 EXIT
