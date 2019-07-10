@@ -1,3 +1,5 @@
+SETLOCAL enabledelayedexpansion
 @ECHO OFF
-cd "C:\techuser\doctypes"
+SET "techuserDir=C:\git\skywest-techuser"
+cd "!techuserDir!\skywest-techuser-44\doctypes"
 npm run prod

@@ -1,7 +1,6 @@
 @ECHO off
 SETLOCAL enabledelayedexpansion
 
-
 SET /a Days=0
 SET /a Hours=0
 SET /a Minutes=0
@@ -19,16 +18,16 @@ SET docFolder=
 :pickTimer
 MODE con: cols=48 lines=10
 
-ECHO 1. Publish to QA
-ECHO 2. Distribute to QA
-ECHO 3. Distribute to Live
+ECHO 1. PUBLISH and DISTRIBUTE to QA
+ECHO 2. DISTRIBUTE to QA
+ECHO 3. DISTRIBUTE to Live
 ECHO.
 
 CHOICE /C 123 /M "Pick a timer: "
 
-IF ERRORLEVEL 1 SET step=PUB
-IF ERRORLEVEL 2 SET step=toQA
-IF ERRORLEVEL 3 SET step=toLive
+IF ERRORLEVEL 1 SET "step=PUB"
+IF ERRORLEVEL 2 SET "step=toQA"
+IF ERRORLEVEL 3 SET "step=toLive"
 
 CLS
 ECHO 1. 175
@@ -64,45 +63,6 @@ IF ERRORLEVEL 3 (
     SET timerDisplay=!fleet! !doctype! !step!
     GOTO CountDown
 )
-IF NOT '%step%'=='PUB' GOTO assigndata
-
-SET search=!fleet!
-IF '%fleet%'=='175' (
-    IF '%doctype%'=='MIP' (
-        SET search=mip
-    )
-    IF '%doctype%'=='AMM' (
-        SET search=MPP
-    )
-)
-
-MODE con:cols=100 lines=20
-SET /a counter=0
-SET /a number=0
-SET choice=
-SET bool=f
-FOR /f "usebackq delims=|" %%f in (`dir /b /O:-D "\\sgudocstage\Documents\JaredLisa\skytrackprocess\src\fromEditor"`) do (
-    IF !counter! LSS 50 (
-        ECHO %%f|find "!search!" >NUL
-        SET /a counter+=1
-        IF NOT ERRORLEVEL 1 (
-            SET /a number+=1
-            SET choice[!number!]=%%f
-            ECHO !number!: %%f
-        )
-    )
-)
-
-SET /p num="Enter the number of the manual you'd like to copy: "
-SET thisManual=!choice[%num%]!
-
-:clipboardcopy
-IF '%doctype%'=='MIP' (
-    IF '%fleet%'=='175' SET docFolder=swMIP_ERJ175
-    IF NOT '%fleet%'=='175' SET docFolder=swMIP_CRJ
-)
-
-ECHO "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\%docFolder%\transform\src\*.zip" | clip
 
 :assigndata
 
@@ -119,17 +79,17 @@ IF '%step%'=='GFXtoMX' GOTO MGFX
 
 :PUB
 IF "%doctype%"=="MIP" (
-    IF "%fleet%"=="900" SET Hours=1 && SET Minutes=28 && GOTO robocopy
-    IF "%fleet%"=="700" SET Hours=1 && SET Minutes=28 &&GOTO robocopy
-    IF "%fleet%"=="200" SET Hours=1 && GOTO robocopy
-    IF "%fleet%"=="175" SET Hours=1 && GOTO robocopy
-    REM IF "%fleet%"=="175" SET Seconds=1 && GOTO robocopy
+    IF "%fleet%"=="900" SET Hours=1 && SET Minutes=28 && GOTO CountDown
+    IF "%fleet%"=="700" SET Hours=1 && SET Minutes=28 && GOTO CountDown
+    IF "%fleet%"=="200" SET Hours=1 && GOTO CountDown
+    IF "%fleet%"=="175" SET Hours=1 && GOTO CountDown
+    REM IF "%fleet%"=="175" SET Seconds=1 && GOTO CountDown
 )
 IF "%doctype%"=="AMM" (
     IF "%fleet%"=="900" ECHO nodata && GOTO end
     IF "%fleet%"=="700" ECHO nodata && GOTO end
     IF "%fleet%"=="200" ECHO nodata && GOTO end
-    IF "%fleet%"=="175" SET Hours=1 && GOTO robocopy
+    IF "%fleet%"=="175" SET Hours=1 && GOTO CountDown
 )
 
 :toQA
@@ -180,48 +140,6 @@ SET "timerDisplay=%fleet%%doctype% %step% ++"
 SET "retry=y"
 SET Minutes=30 && GOTO CountDown
 REM SET Seconds=1 && GOTO CountDown
-:robocopy
-MODE con:cols=70 lines=10
-SET titlebarMSG="%fleet% %doctype% Timer"
-SET timerMSG="%fleet% %doctype% Publishing should be complete, ready to begin toQA Timer"
-CLS
-ECHO 1. Copy %thisManual%
-ECHO 2. Skip
-CHOICE /c 12 /t 10 /d 1 /cs /m "copy %thisManual%?"
-IF ERRORLEVEL 1 CLS
-IF ERRORLEVEL 2 GOTO eclipse
-IF "%fleet%"=="175" (
-    IF !doctype!==MIP (
-        CALL fromEditCopy.bat "!thisManual!" "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\swMIP_ERJ175\transform\docs"
-    )
-    IF !doctype!==AMM (
-        echo !thisManual!
-        pause
-        CALL fromEditCopy.bat "!thisManual!" "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\swAMM_ERJ175\processes\docs"
-    )
-)
-IF "%fleet%"=="200" CALL fromEditCopy.bat "!thisManual!" "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\swMIP_CRJ\transform\docs"
-IF "%fleet%"=="700" CALL fromEditCopy.bat "!thisManual!" "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\swMIP_CRJ\transform\docs"
-IF "%fleet%"=="900" CALL fromEditCopy.bat "!thisManual!" "C:\Git\SkyWestAirlines\skywest-techuser-44\doctypes\swMIP_CRJ\transform\docs"
-
-:eclipse
-CLS
-ECHO 1. Run Eclipse.
-ECHO 2. Skip
-CHOICE /c 12 /t 10 /d 1 /n /cs /m "run eclipse?"
-IF ERRORLEVEL 1 CLS
-IF ERRORLEVEL 2 MODE con:cols=34 lines=3 && GOTO CountDown
-IF "%fleet%"=="175" (
-    IF !doctype!==MIP (
-        CALL eclipse.bat "!thisManual!" "175MIP" "swMIP_ERJ175" 
-    ) 
-    IF !doctype!==AMM ( 
-        CALL eclipse.bat "swAMM_ERJ175.xml" "175AMM" "swAMM_ERJ175"
-    )
-)
-IF "%fleet%"=="200" CALL eclipse.bat "!thisManual!" "200MIP" "swMIP_CRJ"
-IF "%fleet%"=="700" CALL eclipse.bat "!thisManual!" "700MIP" "swMIP_CRJ"
-IF "%fleet%"=="900" CALL eclipse.bat "!thisManual!" "900MIP" "swMIP_CRJ"
 
 MODE con:cols=34 lines=3
 :CountDown
@@ -301,6 +219,4 @@ IF '%step%'=='toLive' SET "step=GFXtoLive" && GOTO assigndata
 IF '%MX%'=='y' SET "step=toMX" && GOTO assigndata
 IF '%step%'=='toMX' SET "step=GFXtoMX" && GOTO assigndata
 :end
-SET /p again="Play again? "
-IF !again!==y GOTO pickTimer
 EXIT
