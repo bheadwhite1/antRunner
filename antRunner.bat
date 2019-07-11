@@ -140,20 +140,20 @@ ECHO.
 ECHO                      ******* ANTRUNNER *******
 ECHO            doctype - %doctype%  Manual - %thisManual% 
 ECHO.
-ECHO a. prepare     q. [RUN]basic   z. [RUN]reports   p. copy path       n. new doctype     
+ECHO a. [RUN]basic  q. [DEPLOY]     z. [RUN]reports   p. copy path       n. new doctype     
 ECHO s. convert     w. makeHTML                       g. local graphics  m. new manual
 ECHO d. addTOC      e. doShort                        y. buildMIPfleet   v. view Files
-ECHO f. finalize    r. [RUN]short   t. [DEPLOY]                          x. xPath
+ECHO f. finalize    r. [RUN]short                                        x. xPath
 ECHO.
 CHOICE /C asdfqwertzxvmnpgy /N /M "Pick a target: "
-IF "%ERRORLEVEL%"== "1" SET target=prepare
-IF "%ERRORLEVEL%"== "2" SET target=convert
-IF "%ERRORLEVEL%"== "3" SET target=addTOC
-IF "%ERRORLEVEL%"== "4" SET target=finalize
+IF "%ERRORLEVEL%"== "1" SET target=[RUN]basic
+IF "%ERRORLEVEL%"== "2" SET target=[ride-init]basic
+IF "%ERRORLEVEL%"== "3" SET target=[ride-temp]basic
+IF "%ERRORLEVEL%"== "4" SET target=[ride-final]basic
 IF "%ERRORLEVEL%"== "5" SET target=[RUN]basic
 IF "%ERRORLEVEL%"== "6" SET target=makeHTML
-IF "%ERRORLEVEL%"== "7" SET target=doShort
-IF "%ERRORLEVEL%"== "8" SET target=[RUN]short
+IF "%ERRORLEVEL%"== "7" SET target=short-deploy && GOTO runSHORT
+IF "%ERRORLEVEL%"== "8" SET target=[RUN]short && GOTO runSHORT
 IF "%ERRORLEVEL%"== "9" SET target=[DEPLOY]
 IF "%ERRORLEVEL%"== "10" SET target=[RUN]reports
 IF "%ERRORLEVEL%"== "11" GOTO xpath
@@ -169,8 +169,6 @@ IF "%ERRORLEVEL%"== "17" GOTO buildMIPfleet
 
 :runANT
 ::RUN TARGET
-IF '%target%'=='doShort' GOTO runSHORT
-IF '%target%'=='[RUN]short' GOTO runSHORT
 
 CLS
 ECHO "!techuserDir!\doctypes\%doctype%\transform\src" | clip
