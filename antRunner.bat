@@ -327,9 +327,6 @@ IF "!manual!"=="900-MIP" GOTO runSHInspections
 IF "!manual!"=="200-MIP" GOTO runSHInspections
 ::SHORT CHAPTER
 CALL ant "-DinputManual=%thisManual%" "-Dpname=chapters" "-Dchapters=%shortChapters%" -buildfile !techuserDir!\doctypes\%doctype%\transform\apache.ant %target%
-IF '%target%' == 'doShort' (
-    CALL ant "-DinputManual=!thisManual!" -f !techuserDir!\doctypes\!doctype!\transform\apache.ant "[DEPLOY]"
-)
 START /b "" CSCRIPT alert.vbs "%thisManual% runner is complete" "%thisManual%"
 PAUSE
 GOTO viewfile
@@ -338,9 +335,6 @@ GOTO viewfile
 SET /p shortInspections="enter inspections for short (b=back) "
 IF '%shortInspections%' == 'b' GOTO antrunner
 CALL ant "-DinputManual=!thisManual!" "-Dpname=chapters" "-Dchapters=!shortChapters!" "-Diname=inspections" "-Dinspections=!shortInspections!" -buildfile !techuserDir!\doctypes\%doctype%\transform\apache.ant %target%
-IF '%target%' == 'doShort' (
-    CALL ant "-DinputManual=!thisManual!" -f !techuserDir!\doctypes\!doctype!\transform\apache.ant "[DEPLOY]"
-)
 START /b "" CSCRIPT alert.vbs "MIP_CRJ runner is complete" "MIP_CRJ short"
 pause
 GOTO viewfile
