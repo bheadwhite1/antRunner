@@ -96,10 +96,12 @@ IF '%fromEditCopy%' == 'true' (
             SET /a stop+=1
             ECHO %%f | findstr /r "!search!" >NUL
             IF NOT ERRORLEVEL 1 (
+                set "copied=yes"
                 CALL fromEditCopy.bat "%%f" "!techuserDir!\doctypes\!doctype!\!skydocs!"
             )
         )
     )
+    IF [!copied!] == [yes] set "copied=" && pause
     IF '!doctype!'=='swAIPC_ERJ175' SET "search="
 )
 
