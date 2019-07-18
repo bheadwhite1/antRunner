@@ -93,10 +93,10 @@ ECHO     ******* PICK A MANUAL *******
 ECHO.
 ::copy in from fromEditor to \processes\docs or \transform\docs
 IF '%fromEditCopy%' == 'true' (
-    FOR /f "usebackq delims=|" %%f in (`dir /b /O:-D "\\sgudocstage\Documents\JaredLisa\skytrackprocess\src\fromEditor"`) do (
-        IF !stop! LSS 50 (
+    FOR /f "usebackq delims=|" %%f in (`dir /B /A:-D /O:-D "\\sgudocstage\Documents\JaredLisa\skytrackprocess\src\fromEditor"`) do (
+        SET /a stop+=1
+        IF !stop! LSS 10 (
             ECHO %%f | findstr /r "!search!" >NUL
-            SET /a stop+=1
             IF NOT ERRORLEVEL 1 (
                 CALL fromEditCopy.bat "%%f" "!techuserDir!\doctypes\!doctype!\!skydocs!"
             )
