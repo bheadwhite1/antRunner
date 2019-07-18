@@ -14,30 +14,33 @@ ECHO      *******  PICK A DOCTYPE  *******
 ECHO.
 ECHO       175          200          OTHER          
 ECHO   ******************************************   
-ECHO    a. AMM       r. AMM       1. MIP_CRJ        x. EXIT
+ECHO    a. AMM       t. AMM       1. MIP_CRJ        x. EXIT
 ECHO    s. AIPC                   2. skybook
-ECHO    d. MIP                    3. skybulletin
-ECHO    f. NDT                    4. forms
-ECHO    q. SRMI
-ECHO    w. SRM
-ECHO    e. SWPM
+ECHO    d. CPM                    3. skybulletin
+ECHO    f. MIP                    4. forms
+ECHO    q. NDT                    
+ECHO    w. SRMI
+ECHO    e. SRM
+ECHO    r. SWPM
 ECHO.
-CHOICE /C asdfqwe1234rx /CS /N /M "Pick a target: "
+CHOICE /C asdfqwert1234x /CS /N /M "Pick a target: "
 IF "%ERRORLEVEL%"== "1" SET "manual=175_AMM"
 IF "%ERRORLEVEL%"== "2" SET "manual=175_AIPC" && SET "search=AIPC"
-IF "%ERRORLEVEL%"== "3" SET "manual=175_MIP" && SET "search=Maintenance.*Program.*mip\)"
-IF "%ERRORLEVEL%"== "4" SET "manual=175_NDT"
-IF "%ERRORLEVEL%"== "5" SET "manual=175_SRMI"
-IF "%ERRORLEVEL%"== "6" SET "manual=175_SRM"
-IF "%ERRORLEVEL%"== "7" SET "manual=175_SWPM"
-IF "%ERRORLEVEL%"== "8" SET "manual=MIP_CRJ"
-IF "%ERRORLEVEL%"== "9" SET "manual=skybook"
-IF "%ERRORLEVEL%"== "10" SET "manual=skybulletin"
-IF "%ERRORLEVEL%"== "11" SET "manual=forms"
-IF "%ERRORLEVEL%"== "12" SET "manual=200_AMM"
-IF "%ERRORLEVEL%"== "13" EXIT
+IF "%ERRORLEVEL%"== "3" SET "manual=175_CPM"
+IF "%ERRORLEVEL%"== "4" SET "manual=175_MIP" && SET "search=Maintenance.*Program.*mip\)"
+IF "%ERRORLEVEL%"== "5" SET "manual=175_NDT"
+IF "%ERRORLEVEL%"== "6" SET "manual=175_SRMI"
+IF "%ERRORLEVEL%"== "7" SET "manual=175_SRM"
+IF "%ERRORLEVEL%"== "8" SET "manual=175_SWPM"
+IF "%ERRORLEVEL%"== "9" SET "manual=MIP_CRJ"
+IF "%ERRORLEVEL%"== "10" SET "manual=200_AMM"
+IF "%ERRORLEVEL%"== "11" SET "manual=skybook"
+IF "%ERRORLEVEL%"== "12" SET "manual=skybulletin"
+IF "%ERRORLEVEL%"== "13" SET "manual=forms"
+IF "%ERRORLEVEL%"== "14" EXIT
 IF '%manual%'=='175_AIPC' SET "doctype=swAIPC_ERJ175" && SET "file=swaipc_erj175" && SET "fromEditCopy=true"
 IF '%manual%'=='175_AMM' SET "doctype=swAMM_ERJ175"
+IF '%manual%'=='175_CPM' SET "doctype=swCPM_ERJ175"
 IF '%manual%'=='175_NDT' SET "doctype=swNDT_ERJ175"
 IF '%manual%'=='175_MIP' SET "doctype=swMIP_ERJ175" && SET "file=swmip_erj175" && SET "fromEditCopy=true"
 IF '%manual%'=='175_SRMI' SET "doctype=swSRMI_ERJ175" && SET "file=swsrmi_erj175"
@@ -55,11 +58,11 @@ IF '%manual%'=='sw' SET "doctype=sw"
 GOTO build
 
 :build
-::SET LOCATION OF BUILD FILES 
+::SET LOCATION OF INPUT FILES 
 
-SET "loc=!techuserDir!\doctypes\%doctype%\transform\docs"
-IF '%doctype%'=='skybook' SET "loc=C:\Users\s064075\Desktop\xmlDocs\%doctype%\src"
-IF '%doctype%'=='skybulletin' SET "loc=C:\Users\s064075\Desktop\xmlDocs\%doctype%\src"
+SET "manInputDir=!techuserDir!\doctypes\%doctype%\transform\docs"
+IF '%doctype%'=='skybook' SET "manInputDir=C:\Users\s064075\Desktop\xmlDocs\%doctype%\src"
+IF '%doctype%'=='skybulletin' SET "manInputDir=C:\Users\s064075\Desktop\xmlDocs\%doctype%\src"
 
 ::SET skywest revision docs
 SET "skydocs=transform\docs"
@@ -106,13 +109,13 @@ IF '%fromEditCopy%' == 'true' (
 ::display manuals in \transform\docs
 CLS
 IF '%search%' == '' (
-    FOR /f "usebackq delims=|" %%f in (`dir /b %loc%`) do (
+    FOR /f "usebackq delims=|" %%f in (`dir /b %manInputDir%`) do (
         SET /a counter+=1
         ECHO !counter!: %%f
         SET choicer[!counter!]=%%f
     )
 ) ELSE (
-    FOR /f "usebackq delims=|" %%f in (`dir /b /O:-D %loc%`) do (
+    FOR /f "usebackq delims=|" %%f in (`dir /b /O:-D %manInputDir%`) do (
         ECHO %%f | findstr /r "!search! xPath" >NUL
         IF NOT ERRORLEVEL 1 (
             SET /a counter+=1
