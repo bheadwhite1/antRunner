@@ -83,19 +83,17 @@ IF '%fromEditCopy%' == 'true' (
         ECHO  3. 900
         ECHO.
         CHOICE /C 123 /CS /N /M "Pick a target: "
-        IF "!ERRORLEVEL!" == "1" SET "search=CRJ.*200" && SET "manual=200-MIP" && SET "TUdoctype=swMIP_CRJ200"
-        IF "!ERRORLEVEL!" == "2" SET "search=CRJ.*700" && SET "manual=700-MIP" && SET "TUdoctype=swMIP_CRJ700"
-        IF "!ERRORLEVEL!" == "3" SET "search=CRJ.*900" && SET "manual=900-MIP" && SET "TUdoctype=swMIP_CRJ900"
+        IF "!ERRORLEVEL!" == "1" SET "search=MIP.*CRJ.*200" && SET "manual=200-MIP" && SET "TUdoctype=swMIP_CRJ200"
+        IF "!ERRORLEVEL!" == "2" SET "search=CRJ.*700.*MIP" && SET "manual=700-MIP" && SET "TUdoctype=swMIP_CRJ700"
+        IF "!ERRORLEVEL!" == "3" SET "search=CRJ.*900.*MIP" && SET "manual=900-MIP" && SET "TUdoctype=swMIP_CRJ900"
     )
 )
-ECHO.
-ECHO     ******* PICK A MANUAL *******
-ECHO.
 ::copy in from fromEditor to \processes\docs or \transform\docs
 IF '%fromEditCopy%' == 'true' (
-    FOR /f "usebackq delims=|" %%f in (`dir /B /A:-D /O:-D "\\sgudocstage\Documents\JaredLisa\skytrackprocess\src\fromEditor"`) do (
-        SET /a stop+=1
+    REM FOR /f "usebackq delims=|" %%f in (`dir /B /A:-D /O:-D "\\sgudocstage\Documents\JaredLisa\skytrackprocess\src\fromEditor"`) do (
+    FOR /f "usebackq delims=|" %%f in (`dir /B /o-d /tc "\\sgudocstage\Documents\JaredLisa\skytrackprocess\src\fromEditor"`) do (
         IF !stop! LSS 10 (
+            SET /a stop+=1
             ECHO %%f | findstr /r "!search!" >NUL
             IF NOT ERRORLEVEL 1 (
                 CALL fromEditCopy.bat "%%f" "!techuserDir!\doctypes\!doctype!\!skydocs!"
@@ -103,19 +101,22 @@ IF '%fromEditCopy%' == 'true' (
         )
     )
     IF '!doctype!'=='swAIPC_ERJ175' SET "search="
-    pause
 )
+
 :displayManuals
 ::display manuals in \transform\docs
 CLS
+ECHO.
+ECHO     ******* PICK A MANUAL *******
+ECHO.
 IF '%search%' == '' (
-    FOR /f "usebackq delims=|" %%f in (`dir /b %manInputDir%`) do (
+    FOR /f "usebackq delims=|" %%f in (`dir /B /o-d /tc %manInputDir%`) do (
         SET /a counter+=1
         ECHO !counter!: %%f
         SET choicer[!counter!]=%%f
     )
 ) ELSE (
-    FOR /f "usebackq delims=|" %%f in (`dir /b /O:-D %manInputDir%`) do (
+    FOR /f "usebackq delims=|" %%f in (`dir /B /o-d /tc %manInputDir%`) do (
         ECHO %%f | findstr /r "!search! xPath" >NUL
         IF NOT ERRORLEVEL 1 (
             SET /a counter+=1
