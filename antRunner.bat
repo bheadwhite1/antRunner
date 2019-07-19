@@ -28,7 +28,7 @@ IF [%ERRORLEVEL%] == [1] SET "manual=175_AMM" && SET "search=MPP-SKY"
 IF [%ERRORLEVEL%] == [2] SET "manual=175_AIPC" && SET "search=AIPC"
 IF [%ERRORLEVEL%] == [3] SET "manual=175_CPM"
 IF [%ERRORLEVEL%] == [4] SET "manual=175_MIP" && SET "search=Maintenance.*Program.*mip\)"
-IF [%ERRORLEVEL%] == [5] SET "manual=175_NDT"
+IF [%ERRORLEVEL%] == [5] SET "manual=175_NDT" && SET "search=swNDT_ERJ175"
 IF [%ERRORLEVEL%] == [6] SET "manual=175_SRMI"
 IF [%ERRORLEVEL%] == [7] SET "manual=175_SRM"
 IF [%ERRORLEVEL%] == [8] SET "manual=175_SWPM"
@@ -93,7 +93,7 @@ IF [%fromEditCopy%] == [true] (
 IF [%fromEditCopy%] == [true] (
     REM FOR /f "usebackq delims=|" %%f in (`dir /B /A:-D /O:-D "\\sgudocstage\Documents\JaredLisa\skytrackprocess\src\fromEditor"`) do (
     FOR /f "usebackq delims=|" %%f in (`dir /B /o-d /tc "\\sgudocstage\Documents\JaredLisa\skytrackprocess\src\fromEditor"`) do (
-        IF !stop! LSS 10 (
+        IF !stop! LSS 15 (
             SET /a stop+=1
             ECHO %%f | findstr /r "!search!" >NUL
             IF NOT ERRORLEVEL 1 (
@@ -102,6 +102,7 @@ IF [%fromEditCopy%] == [true] (
             )
         )
     )
+    REM set search to blank for doctypes that use a supplement
     IF [!copied!] == [yes] set "copied=" && pause
     IF [!doctype!] == [swAIPC_ERJ175] SET "search="
     IF [!doctype!] == [swAMM_ERJ175] SET "search="
@@ -124,7 +125,7 @@ IF [%search%] == [] (
     )
 ) ELSE (
     FOR /f "usebackq delims=|" %%f in (`dir /B /o-d /tc %manInputDir%`) do (
-        ECHO %%f | findstr /v /r "!search! xPath" >NUL
+        ECHO %%f | findstr /v /r "xPath" | findstr /r "!search!" >NUL
         IF NOT ERRORLEVEL 1 (
             SET /a counter+=1
             ECHO !counter!: %%f
@@ -253,7 +254,7 @@ ECHO f. !thisManual:~0,-4!-reloaded.xml            v. view files
 ECHO w. !thisManual:~0,-4!.html
 ECHO r. !thisManual:~0,-4!-short.xml
 ECHO.
-ECHO Select an file to run an xpath query on.
+ECHO Select a file to run an xpath query on.
 CHOICE /C asdfwrvumn /N /CS /M "Pick a target: "
 IF [%ERRORLEVEL%] == [10] GOTO begin
 IF [%ERRORLEVEL%] == [9] GOTO manual
