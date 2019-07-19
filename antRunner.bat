@@ -24,7 +24,7 @@ ECHO    e. SRM
 ECHO    r. SWPM
 ECHO.
 CHOICE /C asdfqwert1234x /CS /N /M "Pick a target: "
-IF [%ERRORLEVEL%] == [1] SET "manual=175_AMM"
+IF [%ERRORLEVEL%] == [1] SET "manual=175_AMM" && SET "search=MPP-SKY"
 IF [%ERRORLEVEL%] == [2] SET "manual=175_AIPC" && SET "search=AIPC"
 IF [%ERRORLEVEL%] == [3] SET "manual=175_CPM"
 IF [%ERRORLEVEL%] == [4] SET "manual=175_MIP" && SET "search=Maintenance.*Program.*mip\)"
@@ -39,7 +39,7 @@ IF [%ERRORLEVEL%] == [12] SET "manual=skybulletin"
 IF [%ERRORLEVEL%] == [13] SET "manual=forms"
 IF [%ERRORLEVEL%] == [14] EXIT
 IF [%manual%] == [175_AIPC] SET "doctype=swAIPC_ERJ175" && SET "file=swaipc_erj175" && SET "fromEditCopy=true"
-IF [%manual%] == [175_AMM] SET "doctype=swAMM_ERJ175"
+IF [%manual%] == [175_AMM] SET "doctype=swAMM_ERJ175" && SET "fromEditCopy=true"
 IF [%manual%] == [175_CPM] SET "doctype=swCPM_ERJ175"
 IF [%manual%] == [175_NDT] SET "doctype=swNDT_ERJ175"
 IF [%manual%] == [175_MIP] SET "doctype=swMIP_ERJ175" && SET "file=swmip_erj175" && SET "fromEditCopy=true"
@@ -67,6 +67,7 @@ IF [%doctype%] == [skybulletin] SET "manInputDir=C:\Users\s064075\Desktop\xmlDoc
 ::SET skywest revision docs
 SET "skydocs=transform\docs"
 IF [%doctype%] == [swAIPC_ERJ175] SET "skydocs=processes\docs"
+IF [%doctype%] == [swAMM_ERJ175] SET "skydocs=processes\docs"
 
 :manual
 ::SELECT A MANUAL
@@ -103,6 +104,7 @@ IF [%fromEditCopy%] == [true] (
     )
     IF [!copied!] == [yes] set "copied=" && pause
     IF [!doctype!] == [swAIPC_ERJ175] SET "search="
+    IF [!doctype!] == [swAMM_ERJ175] SET "search="
 )
 
 :displayManuals
@@ -111,9 +113,9 @@ CLS
 ECHO.
 ECHO     ******* PICK A MANUAL *******
 ECHO.
-IF '%search%' == '' (
+IF [%search%] == [] (
     FOR /f "usebackq delims=|" %%f in (`dir /B /o-d /tc %manInputDir%`) do (
-        ECHO %%f | findstr /r "xPath" >NUL
+        ECHO %%f | findstr /v /r "xPath" >NUL
         IF NOT ERRORLEVEL 1 (
             SET /a counter+=1
             ECHO !counter!: %%f
@@ -122,7 +124,7 @@ IF '%search%' == '' (
     )
 ) ELSE (
     FOR /f "usebackq delims=|" %%f in (`dir /B /o-d /tc %manInputDir%`) do (
-        ECHO %%f | findstr /r "!search! xPath" >NUL
+        ECHO %%f | findstr /v /r "!search! xPath" >NUL
         IF NOT ERRORLEVEL 1 (
             SET /a counter+=1
             ECHO !counter!: %%f
@@ -131,6 +133,7 @@ IF '%search%' == '' (
     )
 
 )
+
 IF !counter!==0 CLS && ECHO. && ECHO nothing setup for this doctype. Try Again. && ECHO. && PAUSE && GOTO begin
 IF !counter!==1 SET "num=1" && GOTO onlyone
 ECHO.
