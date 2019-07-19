@@ -188,6 +188,7 @@ start runANT.bat "%thisManual%" "%doctype%" "%target%"
 GOTO viewfile
 
 :processSUPPLEMENTS
+CLS
 ECHO processing supplements...
 CALL ant "-DinputManual=!thisManual!" -buildfile !techuserDir!\doctypes\%doctype%\transform\apache.ant "processSUP"
 pause
