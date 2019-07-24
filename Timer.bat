@@ -122,7 +122,7 @@ IF "%doctype%"=="AMM" (
     IF "%fleet%"=="900" ECHO nodata && GOTO end
     IF "%fleet%"=="700" ECHO nodata && GOTO end
     IF "%fleet%"=="200" ECHO nodata && GOTO end
-    IF "%fleet%"=="175" SET Hours=1 && GOTO CountDown
+    IF "%fleet%"=="175" SET Minutes=45 && GOTO CountDown
 )
 :GFX
 SET Minutes=5 && GOTO CountDown
