@@ -84,7 +84,7 @@ IF [%fromEditCopy%] == [true] (
         ECHO  3. 900
         ECHO.
         CHOICE /C 123 /CS /N /M "Pick a target: "
-        IF [!ERRORLEVEL!] == [1] SET "search=MIP.*CRJ.*200" && SET "manual=200-MIP" && SET "TUdoctype=swMIP_CRJ200"
+        IF [!ERRORLEVEL!] == [1] SET "search=CRJ.*200" && SET "manual=200-MIP" && SET "TUdoctype=swMIP_CRJ200"
         IF [!ERRORLEVEL!] == [2] SET "search=CRJ.*700.*MIP" && SET "manual=700-MIP" && SET "TUdoctype=swMIP_CRJ700"
         IF [!ERRORLEVEL!] == [3] SET "search=CRJ.*900.*MIP" && SET "manual=900-MIP" && SET "TUdoctype=swMIP_CRJ900"
     )
