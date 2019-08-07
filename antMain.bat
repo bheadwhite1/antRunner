@@ -5,7 +5,7 @@ PUSHD %~dp0
 
 CLS
 ECHO a. AntRunner/xPath     b. Build for Dev
-ECHO s. Copy script         w. Watch css
+ECHO s. Copy Local Styles   w. Watch css
 ECHO d. Timer               t. Toggle tomcat
 ECHO f. Open ContentURL
 
@@ -13,7 +13,7 @@ CHOICE /C asdfbwt /CS /N /M "Pick a task: "
 
 
 IF "%ERRORLEVEL%"== "1" START antRunner.bat
-IF "%ERRORLEVEL%"== "2" START Copy.bat
+IF "%ERRORLEVEL%"== "2" START copyLocal.bat
 IF "%ERRORLEVEL%"== "3" START Timer.bat
 IF "%ERRORLEVEL%"== "4" CALL ContentUrl.bat
 IF "%ERRORLEVEL%"== "5" START runForDev.bat
