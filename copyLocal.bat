@@ -59,8 +59,7 @@ ROBOCOPY "!techuserDir!\doctypes\%doctype%" "C:\techuser\doctypes\%doctype%" "%f
 ROBOCOPY "!techuserDir!\doctypes\%doctype%\processes" "C:\techuser\doctypes\%doctype%\processes" "aa_prepareXML.xsl" "ab_doTechview.xsl" "ac_generateTOC.xsl" "ad_finalizeXML.xsl" /LEV:1
 ::transform copy
 ROBOCOPY "!techuserDir!\doctypes\%doctype%\common\xslt" "C:\techuser\doctypes\%doctype%\common\xslt"
-PAUSE
-GOTO end
+GOTO begin
 
 
 :end
