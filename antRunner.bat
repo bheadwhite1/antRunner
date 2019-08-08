@@ -143,7 +143,6 @@ IF [%num%] == [b] GOTO begin
 :onlyone
 SET thisManual=!choicer[%num%]!
 SET choicer=docs\!thisManual!
-IF [!doctype!] == [swAIPC_ERJ175] GOTO processSUPPLEMENTS
 GOTO viewfile
 :antrunner
 ::SELECT A TARGET TO RUN IN ANTRUNNER
@@ -188,13 +187,6 @@ ECHO "!techuserDir!\doctypes\%doctype%\transform\src" | clip
 start runANT.bat "%thisManual%" "%doctype%" "%target%"
 GOTO viewfile
 
-:processSUPPLEMENTS
-CLS
-ECHO processing supplements...
-CALL ant "-DinputManual=!thisManual!" -buildfile !techuserDir!\doctypes\%doctype%\transform\apache.ant "processSUP"
-pause
-CLS
-GOTO viewfile
 :viewfile
 ::VIEW FILE IN FOXE
 CLS
