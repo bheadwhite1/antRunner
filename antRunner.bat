@@ -201,18 +201,6 @@ ECHO f. reloaded (finalize)                                                 x. x
 ECHO.
 
 CHOICE /C asdfqwrxcumnyp /N /CS /M "Pick a target%pmsg%: "
-IF [%ERRORLEVEL%] == [14] (
-        ECHO "!techuserDir!\doctypes\%doctype%\transform\src" | clip
-        GOTO viewfile
-)
-IF [%ERRORLEVEL%] == [13] (
-    IF [!pretty!] == [n] (
-        SET "pretty=y" && SET "pmsg= (pretty)" && GOTO viewfile
-    )
-    IF [!pretty!] == [y] (
-        SET "pretty=n" && SET "pmsg=" && GOTO viewfile
-    )
-)
 IF [%ERRORLEVEL%] == [1] SET choicer=tmp\!thisManual:~0,-4!-clean.xml
 IF [%ERRORLEVEL%] == [2] SET choicer=tmp\!thisManual:~0,-4!-init.xml
 IF [%ERRORLEVEL%] == [3] SET choicer=tmp\!thisManual:~0,-4!-temp.xml
@@ -225,11 +213,26 @@ IF [%ERRORLEVEL%] == [9] GOTO runANT
 IF [%ERRORLEVEL%] == [10] GOTO antrunner
 IF [%ERRORLEVEL%] == [11] GOTO manual
 IF [%ERRORLEVEL%] == [12] GOTO begin
+IF [%ERRORLEVEL%] == [13] (
+    IF [!pretty!] == [n] (
+        SET "pretty=y" && SET "pmsg= (pretty)" && GOTO viewfile
+    )
+    IF [!pretty!] == [y] (
+        SET "pretty=n" && SET "pmsg=" && GOTO viewfile
+    )
+)
+IF [%ERRORLEVEL%] == [14] (
+        ECHO "!techuserDir!\doctypes\%doctype%\transform\src" | clip
+        GOTO viewfile
+)
+IF [%doctype%] == [skybook] START "C:\Program Files\firstobject\foxe.exe" "!manInputDir!\!thisManual!" && GOTO viewFile
+IF [%doctype%] == [skybulletin] START "C:\Program Files\firstobject\foxe.exe" "!manInputDir!\!thisManual!" && GOTO viewFile
 IF [%pretty%] == [n] START "C:\Program Files\firstobject\foxe.exe" "!techuserDir!\doctypes\%doctype%\transform\!choicer!"
 IF [%pretty%] == [y] (
     tidy -xml --indent auto --indent-attributes yes --indent-spaces 10 --uppercase-tags yes "!techuserDir!\doctypes\%doctype%\transform\!choicer!" > "C:\Users\s064075\Desktop\temp\!choicer!"
     START "C:\Program Files\firstobject\foxe.exe" "C:\Users\s064075\Desktop\temp\!choicer!"
 )
+
 GOTO viewfile
 
 :xpathMenu
