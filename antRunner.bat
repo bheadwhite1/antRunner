@@ -253,16 +253,16 @@ ECHO r. !thisManual:~0,-4!-short.xml
 ECHO.
 ECHO Select a file to run an xpath query on.
 CHOICE /C asdfwrvumn /N /CS /M "Pick a target: "
-IF [%ERRORLEVEL%] == [10] GOTO begin
-IF [%ERRORLEVEL%] == [9] GOTO manual
-IF [%ERRORLEVEL%] == [8] GOTO antrunner
-IF [%ERRORLEVEL%] == [7] GOTO viewfile
-IF [%ERRORLEVEL%] == [6] SET choicer=tmp\!thisManual:~0,-4!-short.xml && SET "customXpath=y" && GOTO runxpath
-IF [%ERRORLEVEL%] == [5] SET choicer=tmp\!thisManual:~0,-4!.html && SET "customXpath=y" && GOTO runxpath
-IF [%ERRORLEVEL%] == [4] SET choicer=tmp\!thisManual:~0,-4!-reloaded.xml && SET "customXpath=y" && GOTO runxpath
-IF [%ERRORLEVEL%] == [3] SET choicer=tmp\!thisManual:~0,-4!-temp.xml && SET "customXpath=y" && GOTO runxpath
-IF [%ERRORLEVEL%] == [2] SET choicer=tmp\!thisManual:~0,-4!-init.xml && SET "customXpath=y" && GOTO runxpath
 IF [%ERRORLEVEL%] == [1] SET choicer=tmp\!thisManual:~0,-4!-clean.xml && SET "customXpath=y" && GOTO runxpath
+IF [%ERRORLEVEL%] == [2] SET choicer=tmp\!thisManual:~0,-4!-init.xml && SET "customXpath=y" && GOTO runxpath
+IF [%ERRORLEVEL%] == [3] SET choicer=tmp\!thisManual:~0,-4!-temp.xml && SET "customXpath=y" && GOTO runxpath
+IF [%ERRORLEVEL%] == [4] SET choicer=tmp\!thisManual:~0,-4!-reloaded.xml && SET "customXpath=y" && GOTO runxpath
+IF [%ERRORLEVEL%] == [5] SET choicer=tmp\!thisManual:~0,-4!.html && SET "customXpath=y" && GOTO runxpath
+IF [%ERRORLEVEL%] == [6] SET choicer=tmp\!thisManual:~0,-4!-short.xml && SET "customXpath=y" && GOTO runxpath
+IF [%ERRORLEVEL%] == [7] GOTO viewfile
+IF [%ERRORLEVEL%] == [8] GOTO antrunner
+IF [%ERRORLEVEL%] == [9] GOTO manual
+IF [%ERRORLEVEL%] == [10] GOTO begin
 
 :xpath
 SET choicer=docs\!thisManual!
@@ -336,6 +336,7 @@ IF [!manual!] == [MIP_CRJ] GOTO runSHInspections
 IF [!manual!] == [700-MIP] GOTO runSHInspections 
 IF [!manual!] == [900-MIP] GOTO runSHInspections 
 IF [!manual!] == [200-MIP] GOTO runSHInspections
+IF [!manual!] == [175_MIP] GOTO runSHInspections
 ::SHORT CHAPTER
 CALL ant "-DinputManual=%thisManual%" "-Dpname=chapters" "-Dchapters=%shortChapters%" -buildfile !techuserDir!\doctypes\%doctype%\transform\apache.ant %target%
 START /b "" CSCRIPT alert.vbs "%thisManual% runner is complete" "%thisManual%"
