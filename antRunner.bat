@@ -332,23 +332,20 @@ SET "shortChapters="
 SET /p shortChapters="enter chapters for %manual% short (b=back): "
 IF [!shortChapters!] == [b] GOTO antrunner
 ECHO "!techuserDir!\doctypes\%doctype%\transform\src" | clip
+IF [!manual!] == [175_MIP] GOTO runSHInspections
 IF [!manual!] == [MIP_CRJ] GOTO runSHInspections 
 IF [!manual!] == [700-MIP] GOTO runSHInspections 
 IF [!manual!] == [900-MIP] GOTO runSHInspections 
 IF [!manual!] == [200-MIP] GOTO runSHInspections
-IF [!manual!] == [175_MIP] GOTO runSHInspections
 ::SHORT CHAPTER
-CALL ant "-DinputManual=%thisManual%" "-Dpname=chapters" "-Dchapters=%shortChapters%" -buildfile !techuserDir!\doctypes\%doctype%\transform\apache.ant %target%
-START /b "" CSCRIPT alert.vbs "%thisManual% runner is complete" "%thisManual%"
-PAUSE
+REM "thisManual" "chapters" "doctype" "target"
+START short.bat "!thisManual!" "!shortChapters!" "!doctype!" "!target!"
 GOTO viewfile
 ::SHORT CHAPTER / INSPECTIONS (MIPs)
 :runSHInspections
 SET /p shortInspections="enter inspections for short (b=back) "
 IF [%shortInspections%] == [b] GOTO antrunner
-CALL ant "-DinputManual=!thisManual!" "-Dpname=chapters" "-Dchapters=!shortChapters!" "-Diname=inspections" "-Dinspections=!shortInspections!" -buildfile !techuserDir!\doctypes\%doctype%\transform\apache.ant %target%
-START /b "" CSCRIPT alert.vbs "MIP_CRJ runner is complete" "MIP_CRJ short"
-pause
+START shortInspec.bat "!thisManual!" "!shortChapters!" "!doctype!" "!target!" "!shortInspections!"
 GOTO viewfile
 
 
