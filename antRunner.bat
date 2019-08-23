@@ -39,17 +39,17 @@ IF [%ERRORLEVEL%] == [12] SET "manual=skybulletin"
 IF [%ERRORLEVEL%] == [13] SET "manual=forms"
 IF [%ERRORLEVEL%] == [14] EXIT
 IF [%manual%] == [175_AIPC] SET "doctype=swAIPC_ERJ175" && SET "file=swaipc_erj175" && SET "fromEditCopy=true"
-IF [%manual%] == [175_AMM] SET "doctype=swAMM_ERJ175" && SET "fromEditCopy=true"
-IF [%manual%] == [175_CPM] SET "doctype=swCPM_ERJ175"
-IF [%manual%] == [175_NDT] SET "doctype=swNDT_ERJ175"
+IF [%manual%] == [175_AMM] SET "doctype=swAMM_ERJ175" && SET "file=" && SET "fromEditCopy=true"
+IF [%manual%] == [175_CPM] SET "doctype=swCPM_ERJ175" && SET "file="
+IF [%manual%] == [175_NDT] SET "doctype=swNDT_ERJ175" && SET "file=swndt_erj175"
 IF [%manual%] == [175_MIP] SET "doctype=swMIP_ERJ175" && SET "file=swmip_erj175" && SET "fromEditCopy=true"
 IF [%manual%] == [175_SRMI] SET "doctype=swSRMI_ERJ175" && SET "file=swsrmi_erj175"
 IF [%manual%] == [175_SWPM] SET "doctype=swSWPM_ERJ175" && SET "file=swswpm_erj175"
 IF [%manual%] == [175_SRM] SET "doctype=swSRM_ERJ175" && SET "file=swsrm_erj175"
 IF [%manual%] == [200_AMM] SET "doctype=swAMM_CRJ200" && SET "file=swamm_crj200"
-IF [%manual%] == [200_MIP] SET "doctype=swMIP_CRJ" && SET "file=swmip_crj200"
-IF [%manual%] == [700_MIP] SET "doctype=swMIP_CRJ" && SET "file=swmip_crj700"
-IF [%manual%] == [900_MIP] SET "doctype=swMIP_CRJ" && SET "file=swmip_crj900"
+IF [%manual%] == [200_MIP] SET "doctype=swMIP_CRJ" && SET "file=swmip_crj"
+IF [%manual%] == [700_MIP] SET "doctype=swMIP_CRJ" && SET "file=swmip_crj"
+IF [%manual%] == [900_MIP] SET "doctype=swMIP_CRJ" && SET "file=swmip_crj"
 IF [%manual%] == [MIP_CRJ] SET "doctype=swMIP_CRJ" && SET "file=swmip_crj" && SET "fromEditCopy=true"
 IF [%manual%] == [skybook] SET "doctype=skybook" && SET "file=skybook"
 IF [%manual%] == [skybulletin] SET "doctype=skybulletin" && SET "file=skybulletin"
@@ -197,10 +197,10 @@ ECHO.
 ECHO a. clean (prepare)         q. original     c. runANT (same target)     n. new doctype
 ECHO s. init (convert)          w. html         p. copy path                m. new manual
 ECHO d. temp (addTOC)           r. short        y. toggle prettyPrint       u. AntRunner 
-ECHO f. reloaded (finalize)                                                 x. xPath
+ECHO f. reloaded (finalize)                     l. copyLocal Styles         x. xPath
 ECHO.
 
-CHOICE /C asdfqwrxcumnyp /N /CS /M "Pick a target%pmsg%: "
+CHOICE /C asdfqwrxcumnypl /N /CS /M "Pick a target%pmsg%: "
 IF [%ERRORLEVEL%] == [1] SET choicer=tmp\!thisManual:~0,-4!-clean.xml
 IF [%ERRORLEVEL%] == [2] SET choicer=tmp\!thisManual:~0,-4!-init.xml
 IF [%ERRORLEVEL%] == [3] SET choicer=tmp\!thisManual:~0,-4!-temp.xml
@@ -229,6 +229,7 @@ IF [%ERRORLEVEL%] == [14] (
         ECHO "!techuserDir!\doctypes\%doctype%\transform\src" | clip
         GOTO viewfile
 )
+IF [%ERRORLEVEL%] == [15] GOTO copyLocal
 IF [%pretty%] == [n] START "C:\Program Files\firstobject\foxe.exe" "!techuserDir!\doctypes\%doctype%\transform\!choicer!"
 IF [%pretty%] == [y] (
     tidy -xml --indent auto --indent-attributes yes --indent-spaces 10 --uppercase-tags yes "!techuserDir!\doctypes\%doctype%\transform\!choicer!" > "C:\Users\s064075\Desktop\temp\!choicer!"
@@ -394,5 +395,17 @@ call ant -Dbookfolder=!localLib! -file C:\techuser\doctypes\!TUdoctype!\build.xm
 START /b "" CSCRIPT alert.vbs "the bfp ant is complete" "BFP"
 pause
 GOTO antrunner
+
+:copyLocal
+IF [!ERRORLEVEL!] == [1] SET "search=CRJ.*200" && SET "manual=200-MIP" && SET "TUdoctype=swMIP_CRJ200"
+IF [!ERRORLEVEL!] == [2] SET "search=CRJ.*700.*MIP" && SET "manual=700-MIP" && SET "TUdoctype=swMIP_CRJ700"
+IF [!ERRORLEVEL!] == [3] SET "search=CRJ.*900.*MIP" && SET "manual=900-MIP" && SET "TUdoctype=swMIP_CRJ900"
+IF [!doctype!] == [swCPM_ERJ175] GOTO viewFile
+IF [!doctype!] == [swAMM_ERJ175] GOTO viewFile
+IF [!manual!] == [200-MIP] CALL copyLocal2.bat "!techuserDir!" "!TUdoctype!" "!file!" && GOTO viewFile
+IF [!manual!] == [700-MIP] CALL copyLocal2.bat "!techuserDir!" "!TUdoctype!" "!file!" && GOTO viewFile
+IF [!manual!] == [900-MIP] CALL copyLocal2.bat "!techuserDir!" "!TUdoctype!" "!file!" && GOTO viewFile
+CALL copyLocal2.bat "!techuserDir!" "!doctype!" "!file!"
+GOTO viewFile
 
 :end
