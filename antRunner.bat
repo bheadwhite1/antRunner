@@ -39,7 +39,7 @@ IF [%ERRORLEVEL%] == [12] SET "manual=skybulletin"
 IF [%ERRORLEVEL%] == [13] SET "manual=forms"
 IF [%ERRORLEVEL%] == [14] EXIT
 IF [%manual%] == [175_AIPC] SET "doctype=swAIPC_ERJ175" && SET "file=swaipc_erj175" && SET "fromEditCopy=true"
-IF [%manual%] == [175_AMM] SET "doctype=swAMM_ERJ175" && SET "file=" && SET "fromEditCopy=true"
+IF [%manual%] == [175_AMM] SET "doctype=swAMM_ERJ175" && SET "file=swamm_erj175" && SET "fromEditCopy=true"
 IF [%manual%] == [175_CPM] SET "doctype=swCPM_ERJ175" && SET "file="
 IF [%manual%] == [175_NDT] SET "doctype=swNDT_ERJ175" && SET "file=swndt_erj175"
 IF [%manual%] == [175_MIP] SET "doctype=swMIP_ERJ175" && SET "file=swmip_erj175" && SET "fromEditCopy=true"
@@ -401,7 +401,6 @@ IF [!ERRORLEVEL!] == [1] SET "search=CRJ.*200" && SET "manual=200-MIP" && SET "T
 IF [!ERRORLEVEL!] == [2] SET "search=CRJ.*700.*MIP" && SET "manual=700-MIP" && SET "TUdoctype=swMIP_CRJ700"
 IF [!ERRORLEVEL!] == [3] SET "search=CRJ.*900.*MIP" && SET "manual=900-MIP" && SET "TUdoctype=swMIP_CRJ900"
 IF [!doctype!] == [swCPM_ERJ175] GOTO viewFile
-IF [!doctype!] == [swAMM_ERJ175] GOTO viewFile
 IF [!manual!] == [200-MIP] CALL copyLocal2.bat "!techuserDir!" "!TUdoctype!" "!file!" && GOTO viewFile
 IF [!manual!] == [700-MIP] CALL copyLocal2.bat "!techuserDir!" "!TUdoctype!" "!file!" && GOTO viewFile
 IF [!manual!] == [900-MIP] CALL copyLocal2.bat "!techuserDir!" "!TUdoctype!" "!file!" && GOTO viewFile
