@@ -4,9 +4,9 @@ PUSHD %~dp0
 :begin
 
 CLS
-ECHO a. AntRunner/xPath     b. Build for Dev
-ECHO s. Copy Local Styles   w. Watch css
-ECHO d. Timer               t. Toggle tomcat
+ECHO a. AntRunner/xPath     
+ECHO s. Watch css
+ECHO d. Timer
 ECHO f. Open ContentURL
 
 CHOICE /C asdfbwt /CS /N /M "Pick a task: "
