@@ -14,35 +14,38 @@ ECHO      *******  PICK A DOCTYPE  *******
 ECHO.
 ECHO       175          200          OTHER          
 ECHO   ******************************************   
-ECHO    a. AMM       t. AMM       1. MIP_CRJ        x. EXIT
+ECHO    a. AMM II    t. AMM       1. MIP_CRJ        x. EXIT
 ECHO    s. AIPC                   2. skybook
 ECHO    d. CPM                    3. skybulletin
 ECHO    f. MIP                    4. forms
-ECHO    q. NDT                    
-ECHO    w. SRMI
-ECHO    e. SRM
-ECHO    r. SWPM
+ECHO    q. NDT
+ECHO    w. SDS (AMM I)
+ECHO    e. SRMI
+ECHO    r. SRM
+ECHO    z. SWPM
 ECHO.
-CHOICE /C asdfqwert1234x /CS /N /M "Pick a target: "
+CHOICE /C asdfqwerzt1234x /CS /N /M "Pick a target: "
 IF [%ERRORLEVEL%] == [1] SET "manual=175_AMM" && SET "search=MPP-SKY"
 IF [%ERRORLEVEL%] == [2] SET "manual=175_AIPC" && SET "search=AIPC"
 IF [%ERRORLEVEL%] == [3] SET "manual=175_CPM"
 IF [%ERRORLEVEL%] == [4] SET "manual=175_MIP" && SET "search=Maintenance.*Program.*mip\)"
 IF [%ERRORLEVEL%] == [5] SET "manual=175_NDT" && SET "search=swNDT_ERJ175"
-IF [%ERRORLEVEL%] == [6] SET "manual=175_SRMI"
-IF [%ERRORLEVEL%] == [7] SET "manual=175_SRM"
-IF [%ERRORLEVEL%] == [8] SET "manual=175_SWPM"
-IF [%ERRORLEVEL%] == [9] SET "manual=200_AMM"
-IF [%ERRORLEVEL%] == [10] SET "manual=MIP_CRJ"
-IF [%ERRORLEVEL%] == [11] SET "manual=skybook"
-IF [%ERRORLEVEL%] == [12] SET "manual=skybulletin"
-IF [%ERRORLEVEL%] == [13] SET "manual=forms"
-IF [%ERRORLEVEL%] == [14] EXIT
+IF [%ERRORLEVEL%] == [6] SET "manual=175_SDS"
+IF [%ERRORLEVEL%] == [7] SET "manual=175_SRMI"
+IF [%ERRORLEVEL%] == [8] SET "manual=175_SRM"
+IF [%ERRORLEVEL%] == [9] SET "manual=175_SWPM"
+IF [%ERRORLEVEL%] == [10] SET "manual=200_AMM"
+IF [%ERRORLEVEL%] == [11] SET "manual=MIP_CRJ"
+IF [%ERRORLEVEL%] == [12] SET "manual=skybook"
+IF [%ERRORLEVEL%] == [13] SET "manual=skybulletin"
+IF [%ERRORLEVEL%] == [14] SET "manual=forms"
+IF [%ERRORLEVEL%] == [15] EXIT
 IF [%manual%] == [175_AIPC] SET "doctype=swAIPC_ERJ175" && SET "file=swaipc_erj175" && SET "fromEditCopy=true"
 IF [%manual%] == [175_AMM] SET "doctype=swAMM_ERJ175" && SET "file=swamm_erj175" && SET "fromEditCopy=true"
-IF [%manual%] == [175_CPM] SET "doctype=swCPM_ERJ175" && SET "file="
+IF [%manual%] == [175_CPM] SET "doctype=swCPM_ERJ175" && SET "file=swcpm_erj175"
 IF [%manual%] == [175_NDT] SET "doctype=swNDT_ERJ175" && SET "file=swndt_erj175"
 IF [%manual%] == [175_MIP] SET "doctype=swMIP_ERJ175" && SET "file=swmip_erj175" && SET "fromEditCopy=true"
+IF [%manual%] == [175_SDS] SET "doctype=swSDS_ERJ175" && SET "file=swsds_erj175"
 IF [%manual%] == [175_SRMI] SET "doctype=swSRMI_ERJ175" && SET "file=swsrmi_erj175"
 IF [%manual%] == [175_SWPM] SET "doctype=swSWPM_ERJ175" && SET "file=swswpm_erj175"
 IF [%manual%] == [175_SRM] SET "doctype=swSRM_ERJ175" && SET "file=swsrm_erj175"
@@ -277,7 +280,7 @@ ECHO.
 ECHO x. xpath on temp files            n. new doctype
 ECHO p. [RUN]basic on new file         m. new manual
 ECHO o. custom root                    u. antrunner
-ECHO t. taskcard                       v. view files
+ECHO c. chapter                        v. view files
 ECHO.
 SET /p expression="enter xpath to generate new file: "
 IF [!expression!] == [x] GOTO xpathMenu
@@ -289,7 +292,7 @@ IF [!expression!] == [p] SET "thisManual=%manual%xPath.xml" && SET "target=[RUN]
 SET "root=!techuserDir!\doctypes\%doctype%"
 SET "dtd=%root%\%doctype%.dtd"
 SET thisFile="%root%\transform\!choicer!"
-IF [!expression!] == [t] GOTO taskcard
+IF [!expression!] == [c] GOTO runchapters
 IF [!expression!] == [o] GOTO xpathWithRoot
 ::working
 IF [%customXpath%] == [y] (
@@ -321,10 +324,9 @@ xml -q fo --dropdtd !thisFile! | tidy -q -xml | xml sel -t -e "%xpathroot%" -c "
 START %root%\transform\docs\%manual%xPath.xml
 GOTO xpath
 
-:taskcard
-SET /p taskKey="paste in task key: "
-tidy -q -xml !thisFile! | findstr /R "?xml DOCTYPE ENTITY dtd \]> ^\[$" > %root%\transform\docs\%manual%xPath.xml
-xml -q fo -D !thisFile! | tidy -q -xml | xml sel -t -c "//taskcard[@key='%taskKey%'][1]"  >>  %root%\transform\docs\%manual%xPath.xml
+:runchapters
+SET /p chKey="what chapter?: "
+xml -q fo -D !thisFile! | tidy -q -xml | xml tr "runChapters.xsl" -s chKey=%chKey% > %root%\transform\docs\%manual%xPath.xml
 START %root%\transform\docs\%manual%xPath.xml
 GOTO xpath
 
@@ -400,7 +402,6 @@ GOTO antrunner
 IF [!ERRORLEVEL!] == [1] SET "search=CRJ.*200" && SET "manual=200-MIP" && SET "TUdoctype=swMIP_CRJ200"
 IF [!ERRORLEVEL!] == [2] SET "search=CRJ.*700.*MIP" && SET "manual=700-MIP" && SET "TUdoctype=swMIP_CRJ700"
 IF [!ERRORLEVEL!] == [3] SET "search=CRJ.*900.*MIP" && SET "manual=900-MIP" && SET "TUdoctype=swMIP_CRJ900"
-IF [!doctype!] == [swCPM_ERJ175] GOTO viewFile
 IF [!manual!] == [200-MIP] CALL copyLocal2.bat "!techuserDir!" "!TUdoctype!" "!file!" && GOTO viewFile
 IF [!manual!] == [700-MIP] CALL copyLocal2.bat "!techuserDir!" "!TUdoctype!" "!file!" && GOTO viewFile
 IF [!manual!] == [900-MIP] CALL copyLocal2.bat "!techuserDir!" "!TUdoctype!" "!file!" && GOTO viewFile
