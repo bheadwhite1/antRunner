@@ -14,7 +14,7 @@ ECHO      *******  PICK A DOCTYPE  *******
 ECHO.
 ECHO       175          200          OTHER          
 ECHO   ******************************************   
-ECHO    a. AMM II    t. AMM       1. MIP_CRJ        x. EXIT
+ECHO    a. AMM II    t. AMM       1. MIP_CRJ        0. EXIT
 ECHO    s. AIPC                   2. skybook
 ECHO    d. CPM                    3. skybulletin
 ECHO    f. MIP                    4. forms
@@ -22,9 +22,10 @@ ECHO    q. NDT
 ECHO    w. SDS (AMM I)
 ECHO    e. SRMI
 ECHO    r. SRM
-ECHO    z. SWPM
+ECHO    z. SSM
+ECHO    x. SWPM
 ECHO.
-CHOICE /C asdfqwerzt1234x /CS /N /M "Pick a target: "
+CHOICE /C asdfqwerzxt12340 /CS /N /M "Pick a target: "
 IF [%ERRORLEVEL%] == [1] SET "manual=175_AMM" && SET "search=MPP-SKY"
 IF [%ERRORLEVEL%] == [2] SET "manual=175_AIPC" && SET "search=AIPC"
 IF [%ERRORLEVEL%] == [3] SET "manual=175_CPM"
@@ -33,13 +34,14 @@ IF [%ERRORLEVEL%] == [5] SET "manual=175_NDT" && SET "search=swNDT_ERJ175"
 IF [%ERRORLEVEL%] == [6] SET "manual=175_SDS"
 IF [%ERRORLEVEL%] == [7] SET "manual=175_SRMI"
 IF [%ERRORLEVEL%] == [8] SET "manual=175_SRM"
-IF [%ERRORLEVEL%] == [9] SET "manual=175_SWPM"
-IF [%ERRORLEVEL%] == [10] SET "manual=200_AMM"
-IF [%ERRORLEVEL%] == [11] SET "manual=MIP_CRJ"
-IF [%ERRORLEVEL%] == [12] SET "manual=skybook"
-IF [%ERRORLEVEL%] == [13] SET "manual=skybulletin"
-IF [%ERRORLEVEL%] == [14] SET "manual=forms"
-IF [%ERRORLEVEL%] == [15] EXIT
+IF [%ERRORLEVEL%] == [9] SET "manual=175_SSM"
+IF [%ERRORLEVEL%] == [10] SET "manual=175_SWPM"
+IF [%ERRORLEVEL%] == [11] SET "manual=200_AMM"
+IF [%ERRORLEVEL%] == [12] SET "manual=MIP_CRJ"
+IF [%ERRORLEVEL%] == [13] SET "manual=skybook"
+IF [%ERRORLEVEL%] == [14] SET "manual=skybulletin"
+IF [%ERRORLEVEL%] == [15] SET "manual=forms"
+IF [%ERRORLEVEL%] == [16] EXIT
 IF [%manual%] == [175_AIPC] SET "doctype=swAIPC_ERJ175" && SET "file=swaipc_erj175" && SET "fromEditCopy=true"
 IF [%manual%] == [175_AMM] SET "doctype=swAMM_ERJ175" && SET "file=swamm_erj175" && SET "fromEditCopy=true"
 IF [%manual%] == [175_CPM] SET "doctype=swCPM_ERJ175" && SET "file=swcpm_erj175"
@@ -49,6 +51,7 @@ IF [%manual%] == [175_SDS] SET "doctype=swSDS_ERJ175" && SET "file=swsds_erj175"
 IF [%manual%] == [175_SRMI] SET "doctype=swSRMI_ERJ175" && SET "file=swsrmi_erj175"
 IF [%manual%] == [175_SWPM] SET "doctype=swSWPM_ERJ175" && SET "file=swswpm_erj175"
 IF [%manual%] == [175_SRM] SET "doctype=swSRM_ERJ175" && SET "file=swsrm_erj175"
+IF [%manual%] == [175_SSM] SET "doctype=swSSM_ERJ175" && SET "file=swssm_erj175"
 IF [%manual%] == [200_AMM] SET "doctype=swAMM_CRJ200" && SET "file=swamm_crj200"
 IF [%manual%] == [200_MIP] SET "doctype=swMIP_CRJ" && SET "file=swmip_crj"
 IF [%manual%] == [700_MIP] SET "doctype=swMIP_CRJ" && SET "file=swmip_crj"
