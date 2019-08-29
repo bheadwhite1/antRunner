@@ -198,11 +198,11 @@ ECHO               doctype - %doctype%     Manual - %thisManual%
 ECHO.
 ECHO a. clean (prepare)         q. original     c. runANT (same target)     n. new doctype
 ECHO s. init (convert)          w. html         p. copy path                m. new manual
-ECHO d. temp (addTOC)           r. short        y. toggle prettyPrint       u. AntRunner 
-ECHO f. reloaded (finalize)                     l. copyLocal Styles         x. xPath
+ECHO d. temp (addTOC)           r. short        l. copy Local Styles        u. AntRunner 
+ECHO f. reloaded (finalize)                                                 x. xPath
 ECHO.
 
-CHOICE /C asdfqwrxcumnypl /N /CS /M "Pick a target%pmsg%: "
+CHOICE /C asdfqwrxcumnpl /N /CS /M "Pick a target%pmsg%: "
 IF [%ERRORLEVEL%] == [1] SET choicer=tmp\!thisManual:~0,-4!-clean.xml
 IF [%ERRORLEVEL%] == [2] SET choicer=tmp\!thisManual:~0,-4!-init.xml
 IF [%ERRORLEVEL%] == [3] SET choicer=tmp\!thisManual:~0,-4!-temp.xml
@@ -219,24 +219,21 @@ IF [%ERRORLEVEL%] == [9] GOTO runANT
 IF [%ERRORLEVEL%] == [10] GOTO antrunner
 IF [%ERRORLEVEL%] == [11] GOTO manual
 IF [%ERRORLEVEL%] == [12] GOTO begin
-IF [%ERRORLEVEL%] == [13] (
-    IF [!pretty!] == [n] (
-        SET "pretty=y" && SET "pmsg= (pretty)" && GOTO viewfile
-    )
-    IF [!pretty!] == [y] (
-        SET "pretty=n" && SET "pmsg=" && GOTO viewfile
-    )
-)
-IF [%ERRORLEVEL%] == [14] (
-        ECHO "!techuserDir!\doctypes\%doctype%\transform\src" | clip
-        GOTO viewfile
-)
-IF [%ERRORLEVEL%] == [15] GOTO copyLocal
-IF [%pretty%] == [n] START "C:\Program Files\firstobject\foxe.exe" "!techuserDir!\doctypes\%doctype%\transform\!choicer!"
-IF [%pretty%] == [y] (
-    tidy -xml --indent auto --indent-attributes yes --indent-spaces 10 --uppercase-tags yes "!techuserDir!\doctypes\%doctype%\transform\!choicer!" > "C:\Users\s064075\Desktop\temp\!choicer!"
-    START "C:\Program Files\firstobject\foxe.exe" "C:\Users\s064075\Desktop\temp\!choicer!"
-)
+IF [%ERRORLEVEL%] == [13] ECHO "!techuserDir!\doctypes\%doctype%\transform\src" | clip && GOTO viewfile
+IF [%ERRORLEVEL%] == [14] GOTO copyLocal
+REM IF [%ERRORLEVEL%] == [15] (
+REM     IF [!pretty!] == [n] (
+REM         SET "pretty=y" && SET "pmsg= (pretty)" && GOTO viewfile
+REM     )
+REM     IF [!pretty!] == [y] (
+REM         SET "pretty=n" && SET "pmsg=" && GOTO viewfile
+REM     )
+REM )
+REM IF [%pretty%] == [n] START "C:\Program Files\firstobject\foxe.exe" "!techuserDir!\doctypes\%doctype%\transform\!choicer!"
+REM IF [%pretty%] == [y] (
+REM     tidy -xml --indent auto --indent-attributes yes --indent-spaces 10 --uppercase-tags yes "!techuserDir!\doctypes\%doctype%\transform\!choicer!" > "C:\Users\s064075\Desktop\temp\!choicer!"
+REM     START "C:\Program Files\firstobject\foxe.exe" "C:\Users\s064075\Desktop\temp\!choicer!"
+REM )
 
 GOTO viewfile
 
