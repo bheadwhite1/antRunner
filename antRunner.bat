@@ -160,27 +160,26 @@ ECHO s. convert     w. makeHTML                       g. local graphics  m. new 
 ECHO d. addTOC      e. doShort                        y. buildMIPfleet   v. view Files
 ECHO f. finalize    r. [RUN]short                                        x. xPath
 ECHO.
-CHOICE /C asdfqwertzxvmnpgy /N /M "Pick a target: "
+CHOICE /C asdfqwerzxvmnpgy /N /M "Pick a target: "
 IF [%ERRORLEVEL%] == [1] SET target=[RUN]basic
 IF [%ERRORLEVEL%] == [2] SET target=[ride-init]basic
 IF [%ERRORLEVEL%] == [3] SET target=[ride-temp]basic
 IF [%ERRORLEVEL%] == [4] SET target=[ride-final]basic
-IF [%ERRORLEVEL%] == [5] SET target=[RUN]basic
+IF [%ERRORLEVEL%] == [5] SET target=[DEPLOY]
 IF [%ERRORLEVEL%] == [6] SET target=makeHTML
 IF [%ERRORLEVEL%] == [7] SET target=short-deploy && GOTO runSHORT
 IF [%ERRORLEVEL%] == [8] SET target=[RUN]short && GOTO runSHORT
-IF [%ERRORLEVEL%] == [9] SET target=[DEPLOY]
-IF [%ERRORLEVEL%] == [10] SET target=[RUN]reports
-IF [%ERRORLEVEL%] == [11] GOTO xpath
-IF [%ERRORLEVEL%] == [12] GOTO viewfile
-IF [%ERRORLEVEL%] == [13] GOTO manual
-IF [%ERRORLEVEL%] == [14] GOTO begin
-IF [%ERRORLEVEL%] == [15] (
+IF [%ERRORLEVEL%] == [9] SET target=[RUN]reports
+IF [%ERRORLEVEL%] == [10] GOTO xpath
+IF [%ERRORLEVEL%] == [11] GOTO viewfile
+IF [%ERRORLEVEL%] == [12] GOTO manual
+IF [%ERRORLEVEL%] == [13] GOTO begin
+IF [%ERRORLEVEL%] == [14] (
     ECHO "!techuserDir!\doctypes\%doctype%\transform\src" | clip
     GOTO antrunner
 )
-IF [%ERRORLEVEL%] == [16] GOTO localGraphics
-IF [%ERRORLEVEL%] == [17] GOTO buildMIPfleet
+IF [%ERRORLEVEL%] == [15] GOTO localGraphics
+IF [%ERRORLEVEL%] == [16] GOTO buildMIPfleet
 
 :runANT
 ::RUN TARGET
