@@ -332,7 +332,8 @@ GOTO xpath
 
 :runSHORT
 SET "shortChapters="
-SET /p shortChapters="enter chapters for %manual% short (b=back): "
+ECHO precede special chars with a "^"
+SET /p shortChapters="enter chapters for %manual% short (b=back)"
 IF [!shortChapters!] == [b] GOTO antrunner
 ECHO "!techuserDir!\doctypes\%doctype%\transform\src" | clip
 IF [!manual!] == [175_MIP] GOTO runSHInspections
@@ -346,7 +347,7 @@ START short.bat "!thisManual!" "!shortChapters!" "!doctype!" "!target!"
 GOTO viewfile
 ::SHORT CHAPTER / INSPECTIONS (MIPs)
 :runSHInspections
-SET /p shortInspections="enter inspections for short (b=back) "
+SET /p shortInspections="enter inspections for short (b=back)"
 IF [%shortInspections%] == [b] GOTO antrunner
 START shortInspec.bat "!thisManual!" "!shortChapters!" "!doctype!" "!target!" "!shortInspections!"
 GOTO viewfile
