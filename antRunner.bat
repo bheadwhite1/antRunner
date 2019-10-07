@@ -201,11 +201,11 @@ ECHO               doctype - %doctype%     Manual - %thisManual%
 ECHO.
 ECHO a. clean (prepare)         q. original     c. runANT (same target)     n. new doctype
 ECHO s. init (convert)          w. html         p. copy path                m. new manual
-ECHO d. temp (addTOC)           r. short        l. copy Local Styles        u. AntRunner 
+ECHO d. temp (addTOC)           r. short        1. copy Local Styles        u. AntRunner 
 ECHO f. reloaded (finalize)                                                 x. xPath
 ECHO.
 
-CHOICE /C asdfqwrxcumnpl /N /CS /M "Pick a target%pmsg%: "
+CHOICE /C asdfqwrxcumnp1 /N /CS /M "Pick a target%pmsg%: "
 IF [%ERRORLEVEL%] == [1] SET choicer=tmp\!thisManual:~0,-4!-clean.xml
 IF [%ERRORLEVEL%] == [2] SET choicer=tmp\!thisManual:~0,-4!-init.xml
 IF [%ERRORLEVEL%] == [3] SET choicer=tmp\!thisManual:~0,-4!-temp.xml
