@@ -30,14 +30,13 @@ FOR /F "TOKENS=1-7 delims=/" %%A IN ("%contentPath%") DO SET "lastFile=%%A\%%B\%
 
 REM debugging
 REM ECHO file: !lastFile! env: %env%
-
 IF '%env%'=='localhost:8080' (
     START "!foxeExe!" "C:\techuser\data\!lastFile!.xml"
 )
-IF '%env%'=='sgutviewdevstage01' (
+IF '%env%'=='sgutviewdevstage01.skywest.com' (
     START "!foxeExe!" "\\sgutviewdevstage01\e$\techuser\data\!lastFile!.xml"
 )
-IF '%env%'=='sgutviewdevqa01' (
+IF '%env%'=='sgutviewdevqa01.skywest.com' (
     START "!foxeExe!" "\\sgutviewdevqa01\e$\techuser\data\!lastFile!.xml"
 )
 IF '%env%'=='sgutviewstage01.skywest.com' (
